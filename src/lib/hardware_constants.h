@@ -8,6 +8,7 @@
 // hardware-wide
 #define X_MAX 320
 #define Y_MAX 240
+#define TIMER_MAX 100000000
 
 // game specific numbers
 #define COL_MAX 16
