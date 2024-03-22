@@ -5,21 +5,23 @@
  * Use main.i in CPUlator, re-add any #includes of built-in libraries in CPUlator
  */
 
+// For use in #include guards. If not using CPUlator, please comment this definition out!
+#define CPULATOR
+
 #include "lib/hardware_constants.h"
 #include "lib/device_structs.h"
+#include "lib/graphics.h"
 
 // main functions
 static void SetupBoard (void);
 
 // timer utility functions
-int SecondsToTicks (unsigned int seconds);
+int SecondsToTicks (double seconds);
 void SetTimer (unsigned int ticks);
 
-// graphics utility functions
-void Swap (int *a, int *b);
-void PlotPixel (int x, int y, short int line_colour);
-void ClearScreen (void);
-void WaitForVSync (void);
+// other device utility functions
+void WriteLEDSingle (uint_8 integer_write_value);
+void WriteHexDisplaySingle (uint_8 display_num, uint_32 write_value);
 
 int main (void) {
     SetupBoard();
@@ -39,7 +41,7 @@ static void SetupBoard (void) {
 /*
  * Timer utilities
  */
-int SecondsToTicks (unsigned int const seconds) {
+int SecondsToTicks (double const seconds) {
    return (int) (seconds * TIMER_MAX);
 }
 
@@ -51,31 +53,31 @@ void SetTimer (unsigned int const ticks) {
 }
 
 /*
- * Video utilities
+ * Other device utilities
  */
-void Swap (int *a, int *b) {
-    int temp = *a;
-    *a = *b;
-    *b = temp;
+void WriteLEDSingle (uint_8 integer_write_value) {
+    if (integer_write_value > 9) integer_write_value = 9;
+    *dLEDs = 0x1 << integer_write_value;
 }
 
-void PlotPixel (int x, int y, short int line_colour) {
-    volatile short int *one_pixel_address;
-    one_pixel_address = (short int*) (dPixelBuffer->BUFFER + (y << 10) + (x << 1));
-    *one_pixel_address = line_colour;
+void WriteHexDisplaySingle (uint_8 display_num, uint_32 write_value) {
+    // display num ranges from 0-7
+    write_value = write_value & 0b1111111; // truncate write value to ensure no interference
+    vuint_32* display_addr;
+
+    if (display_num > 3) {
+        display_addr = dHEX74;
+        display_num -= 4;
+    } else
+        display_addr = dHEX30;
+
+    uint_32 temp = *display_addr & (0x0 << (display_num * 8)); // clears specific display without overwriting others
+    *display_addr = temp | (write_value << (display_num * 8)); // writes to HEX display
 }
 
-void ClearScreen (void) {
-    for (int y = 0; y < Y_MAX; y++)
-        for (int x = 0; x < X_MAX; x++)
-            PlotPixel(x, y, 0xFFFF);
-}
+// This ensures that GCC combines all relevant code into one file. If a new helper .c file is created, please #include it here.
+#ifdef CPULATOR
 
-void WaitForVSync (void) {
-    unsigned int status;
-    dPixelBuffer->BUFFER = 1; // start the synchronization process; write 1 into front buffer addr register
-    status = dPixelBuffer->STATUS; // read the status register
-    while (status & 0x1) // polling loop waiting for S bit to go to 0
-        status = dPixelBuffer->STATUS;
-    // exits when refresh done
-}
+#include "lib/graphics.c"
+
+#endif

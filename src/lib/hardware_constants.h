@@ -17,4 +17,8 @@
 #define ROW_MAX 16
 #define ROW_HEIGHT 15
 
+// colours
+#define WHITE 0xFFFF
+#define BLACK 0x0
+
 #endif
