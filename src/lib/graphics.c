@@ -1,5 +1,4 @@
 #include "graphics.h"
-#include "hardware_constants.h"
 
 static void Swap (int *a, int *b) {
     int temp = *a;

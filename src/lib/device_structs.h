@@ -55,8 +55,9 @@ typedef struct PIXEL_t {
 } PIXEL_t;
 
 typedef struct PS2_t {
-    vuint_16 DATA; // only first 8 bits of DATA is used
-    vuint_16 REG;
+    vuint_8 DATA;
+    vuint_8 RVALID; // only MSB is used
+    vuint_16 RAVAIL;
     vuint_32 CTRL;
 } PS2_t;
 

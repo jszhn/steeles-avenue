@@ -6,6 +6,11 @@
 #define GRAPHICS_H
 
 #include "device_structs.h"
+#include "hardware_constants.h"
+
+// colours
+#define WHITE 0xFFFF
+#define BLACK 0x0
 
 // Swaps the values of two pointers. Used internally.
 static void Swap (int *a, int *b);
