@@ -60,6 +60,9 @@ waitasec(int pow_fraction) {
 #define pi 0xFE1B // pink
 
 
+unsigned short lanes[] = {
+bb, bb, bb, bb, bb, bb, bb, bb, ww, ww, ww, ww, ww, bb, bb, bb, bb, bb, bb, bb, bb, bb, bb, bb, bb, bb, bb, bb, ww, ww, ww, ww, ww, bb, bb, bb, bb, bb, bb, bb, bb, bb, bb, bb, bb, bb, bb, bb, ww, ww, ww, ww, ww, bb, bb, bb, bb, bb, bb, bb, bb, bb, bb, bb, bb, bb, bb, bb, ww, ww, ww, ww, ww, bb, bb, bb, bb, bb, bb, bb, bb, bb, bb, bb, bb, bb, bb, bb, ww, ww, ww, ww, ww, bb, bb, bb, bb, bb, bb, bb, bb, bb, bb, bb, bb, bb, bb, bb, ww, ww, ww, ww, ww, bb, bb, bb, bb, bb, bb, bb, bb, bb, bb, bb, bb, bb, bb, bb, ww, ww, ww, ww, ww, bb, bb, bb, bb, bb, bb, bb, bb, bb, bb, bb, bb, bb, bb, bb, ww, ww, ww, ww, ww, bb, bb, bb, bb, bb, bb, bb, bb, bb, bb, bb, bb, bb, bb, bb, ww, ww, ww, ww, ww, bb, bb, bb, bb, bb, bb, bb, bb, bb, bb, bb, bb, bb, bb, bb, ww, ww, ww, ww, ww, bb, bb, bb, bb, bb, bb, bb, bb, bb, bb, bb, bb, bb, bb, bb, ww, ww, ww, ww, ww, bb, bb, bb, bb, bb, bb, bb, bb, bb, bb, bb, bb, bb, bb, bb, ww, ww, ww, ww, ww, bb, bb, bb, bb, bb, bb, bb, bb, bb, bb, bb, bb, bb, bb, bb, ww, ww, ww, ww, ww, bb, bb, bb, bb, bb, bb, bb, bb, bb, bb, bb, bb, bb, bb, bb, ww, ww, ww, ww, ww, bb, bb, bb, bb, bb, bb, bb, bb, bb, bb, bb, bb, bb, bb, bb, ww, ww, ww, ww, ww, bb, bb, bb, bb, bb, bb, bb, bb, bb, bb, bb, bb, bb, bb, bb, ww, ww, ww, ww, ww, bb, bb, bb, bb, bb, bb, bb,
+};
 
 unsigned short car[] = {
 bb, bb, bb, bb, bb, bb, bb, bb, bb, bb, bb, bb, bb, bb, bb, bb, bb, bb, bb, bb, bb, bb, bb, bb, bb, bb, bb, bb, bb, bb, bb, bb, bb, bb, bb, bb, bb, bb, bb, bb,
@@ -110,6 +113,7 @@ bb, bb, bb, bb, bb, bb, bb, bb, bb, bb, bb, bb, bb, bb, bb, bb, bb, bb, bb, bb, 
 };
 
 unsigned short zum[] = {
+bb, bb, bb, bb, bb, bb, bb, bb, bb, bb, bb, bb, bb, bb, bb, bb, bb, bb, bb, bb, bb, bb, bb, bb, bb, bb, bb, bb, bb, bb, bb, bb, bb, bb, bb, bb, bb, bb, bb, bb, bb, bb, bb, bb, bb, bb, bb, bb, bb, bb, bb, bb, bb, bb, bb, bb, bb, bb, bb, bb, 
 bb, bb, bb, bb, rr, rr, rr, rr, rr, rr, rr, rr, rr, rr, rr, rr, rr, rr, rr, rr, rr, rr, rr, rr, gg, lg, gg, lg, gg, lg, gg, rr, rr, rr, rr, rr, rr, rr, rr, rr, rr, rr, rr, rr, rr, rr, rr, rr, rr, rr, rr, rr, rr, rr, rr, bb, bb, bb, bb, bb,
 bb, bb, bb, rr, rr, rr, rr, rr, rr, rr, rr, rr, rr, rr, rr, rr, rr, rr, rr, rr, rr, rr, rr, rr, rr, gg, lg, gg, lg, gg, lg, gg, rr, rr, rr, rr, rr, rr, rr, rr, rr, rr, rr, rr, rr, rr, rr, rr, rr, rr, rr, rr, rr, rr, rr, rr, bb, bb, bb, bb,
 bb, bb, rr, rr, rr, rr, rr, rr, rr, rr, rr, rr, rr, rr, rr, rr, rr, rr, rr, rr, rr, rr, rr, rr, rr, rr, gg, lg, gg, lg, gg, lg, gg, rr, rr, rr, rr, rr, rr, rr, rr, rr, rr, rr, rr, rr, rr, rr, rr, rr, rr, rr, rr, rr, rr, rr, rr, bb, bb, bb,
@@ -153,7 +157,7 @@ bb, bb, lg, lg, lg, bb, gg, gg, gg, gg, gg, lg, gg, gg, gg, lg, gg, gg, lg, lg, 
 bb, lg, lg, lg, lg, lg, gg, gg, gg, bb, bb, gg, gg, gg, gg, gg, gg, gg, gg, gg, bb, bb, gg, gg, gg, gg, gg, lb, gg, gg, lb, db, db, lb, lb, db, db, db, db, bb,
 bb, lg, lg, lg, lg, lg, gg, gg, bb, gg, lg, bb, gg, gg, gg, gg, gg, gg, gg, bb, gg, lg, bb, gg, gg, gg, gg, gg, gg, gg, gg, db, db, lb, lb, lb, lb, db, db, bb,
 bb, lg, lg, lg, lg, lg, lg, gg, bb, lg, gg, bb, gg, gg, gg, gg, gg, gg, gg, bb, lg, gg, bb, gg, gg, gg, gg, gg, gg, gg, bb, bb, bb, db, db, db, lb, lb, lb, bb,
-bb, bb, lg, lg, lg, bb, bb, bb, bb, bb, bb, bb, bb, bb, bb, bb, bb, bb, bb, bb, bb, bb, bb, bb, bb, bb, bb, bb, bb, bb, bb, bb, bb, bb, bb, bb, db, db, db, vv,
+bb, bb, lg, lg, lg, bb, bb, bb, bb, bb, bb, bb, bb, bb, bb, bb, bb, bb, bb, bb, bb, bb, bb, bb, bb, bb, bb, bb, bb, bb, bb, bb, bb, bb, bb, bb, db, db, db, bb,
 };
 
 struct fb_t {
@@ -162,37 +166,81 @@ unsigned short volatile  pixels[256][512];
 
 struct fb_t *const fbp = ((struct fb_t *) 0x8000000);
 
-// assumes 16x16 sprite
-void
-sprite_draw(struct fb_t *const fbp, unsigned short sprite[], int x, int y) {
+void 
+sprite_draw(struct fb_t *const fbp, unsigned short sprite[], int x, int y, int size) {
  int sxi, syi;
  int xi, yi;
-	
-	for (sxi = 0; sxi < 60; sxi++)
-		for (syi = 0; syi < 13; syi++) {
-		   xi = x + sxi;
-		   yi = y + syi;
-     	   fbp->pixels[yi][xi] = sprite[syi*60+sxi];
+	if(size == 4){
+		for (sxi = 0; sxi < 320; sxi++)
+			for (syi = 0; syi < 1; syi++) {
+		 	  xi = x + sxi;
+		   	  yi = y + syi;
+     	 	  fbp->pixels[yi][xi] = sprite[syi*320+sxi];
+		}
+	}
+	if(size == 3){
+		for (sxi = 0; sxi < 60; sxi++)
+			for (syi = 0; syi < 13; syi++) {
+		 	  xi = x + sxi;
+		   	  yi = y + syi;
+     	 	  fbp->pixels[yi][xi] = sprite[syi*60+sxi];
+		}
+	}
+	if(size == 2){
+		for (sxi = 0; sxi < 40; sxi++)
+			for (syi = 0; syi < 13; syi++) {
+		 	  xi = x + sxi;
+		   	  yi = y + syi;
+     	 	  fbp->pixels[yi][xi] = sprite[syi*40+sxi];
+		}
+	}
+	if(size == 1){
+		for (sxi = 0; sxi < 20; sxi++)
+			for (syi = 0; syi < 13; syi++) {
+		 	  xi = x + sxi;
+		   	  yi = y + syi;
+     	 	  fbp->pixels[yi][xi] = sprite[syi*20+sxi];
+		}
 	}
 }
 
 int xn = 320;
+int xl = 0;
 int yn = 240;
 
 void
 sprite_scroll(struct fb_t *const fbp;) {
-	unsigned short *sprites[3] = {go, go, go};
-	int x, y, s;
-
-    s = 0;
-	for (x = 0; x < xn; x+=1) {
-       sprite_draw(fbp, sprites[s], x, 100);
-	waitasec(2);
-	
+	int x, y;
+	sprite_draw(fbp, lanes, x, 78, 4);
+	sprite_draw(fbp, lanes, x, 79, 4);
+	sprite_draw(fbp, lanes, x, 93, 4);
+	sprite_draw(fbp, lanes, x, 94, 4);
+	sprite_draw(fbp, lanes, x, 108, 4);
+	sprite_draw(fbp, lanes, x, 109, 4);
+	sprite_draw(fbp, lanes, x, 123, 4);
+	sprite_draw(fbp, lanes, x, 124, 4);
+	sprite_draw(fbp, lanes, x, 138, 4);
+	sprite_draw(fbp, lanes, x, 139, 4);
+	sprite_draw(fbp, lanes, x, 153, 4);
+	sprite_draw(fbp, lanes, x, 154, 4);
+	while (1){
+		for (x = 0; x < 380; x+=1){
+			sprite_draw(fbp, ttc, x, 110, 3);
+			sprite_draw(fbp, uber, x, 140, 2);
+			sprite_draw(fbp, raccoon, x, 155, 1);
+		
+			sprite_draw(fbp, go, 320-x, 80, 3);
+			sprite_draw(fbp, zum, 320-x, 95, 3);
+			sprite_draw(fbp, car, 320-x, 125, 2);
+		}
 	}
-  
-
+	for (x = 320; x > xl; x-=1){
+		sprite_draw(fbp, go, x, 80, 3);
+		sprite_draw(fbp, zum, x, 100, 3);
+		sprite_draw(fbp, car, x, 140, 2);
+	}
 }
+
 
 void
 solid_color(struct fb_t *const fbp, unsigned short color) {
@@ -206,6 +254,6 @@ solid_color(struct fb_t *const fbp, unsigned short color) {
 int
 main() {
 	
-  solid_color(fbp, 0xffff); // make all pixels white
+  solid_color(fbp, 0x0000); // make all pixels white
   sprite_scroll(fbp);  // ghost walking horizontally
 }
