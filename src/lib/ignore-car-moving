@@ -1,0 +1,129 @@
+/// TIMER DELAY
+
+struct timer_t {
+       volatile unsigned int status;
+       volatile unsigned int control;
+       volatile unsigned int periodlo;
+       volatile unsigned int periodhi;
+       volatile unsigned int snaplo;
+       volatile unsigned int snaphi;
+};
+
+
+struct timer_t * const timer = (struct timer_t *) 0xFF202000;
+
+#define TIMERSEC 100000000
+
+void
+waitasec(int pow_fraction) {
+	   unsigned int t = TIMERSEC >> pow_fraction;
+       timer->control = 0x8; // stop the timer
+       timer->status = 0; // reset TO
+       timer->periodlo = (t & 0x0000FFFF);
+       timer->periodhi = (t & 0xFFFF0000) >> 16;
+       timer->control = 0x4;
+       while ((timer->status & 0x1) == 0);
+          timer->status = 0; // reset TO
+}
+
+
+// 16x16 sprites as unidimensional arrays :(
+// converted from:
+// https://opengameart.org/content/chibi-monsters-set-01
+// made by ansimuz.com
+
+// grey 0x52AA
+// black 0x0000
+// red 0xF000
+// yellow 0xFEA0
+// light yellow 0xFF53
+// light blue 0xCF5F
+// darker blue 0x9E1B
+// green 0x1E86
+// light green 0x76E5
+// orange 0xFD00
+// light grey 0xAD55
+
+#define gg 0x52AA // grey
+#define lg 0xAD55 // light grey
+#define bb 0x0000 // black
+#define rr 0xF000 // red
+#define yy 0xFEA0 // yellow
+#define ly 0xFF53 // light yellow
+#define lb 0xCF5F // light blue
+#define db 0x9E1B // dark blue
+#define dg 0x1E86 // dark green
+#define lg 0x76E5 // light green
+#define or 0xFD00 // orange
+
+
+
+unsigned short uber[] = {
+bb, bb, bb, bb, bb, bb, bb, bb, bb, bb, bb, bb, bb, bb, bb, bb, bb, bb, bb, bb, bb, bb, bb, bb, bb, bb, bb, bb, bb, bb, bb, bb, bb, bb, bb, bb, bb, bb, bb, bb,
+bb, yy, bb, bb, bb, bb, bb, bb, bb, bb, bb, bb, bb, bb, bb, bb, bb, bb, bb, bb, bb, bb, bb, bb, bb, bb, bb, bb, bb, bb, bb, bb, bb, bb, bb, bb, bb, bb, bb, bb,
+bb, yy, yy, bb, bb, bb, bb, bb, bb, bb, bb, bb, bb, bb, bb, bb, bb, rr, rr, rr, rr, rr, rr, rr, rr, rr, rr, rr, bb, bb, bb, bb, bb, bb, bb, bb, bb, bb, bb, bb,
+bb, ly, yy, yy, bb, bb, bb, bb, bb, bb, bb, bb, bb, bb, bb, bb, rr, rr, rr, rr, rr, rr, rr, rr, rr, rr, rr, rr, rr, bb, bb, bb, bb, bb, bb, bb, bb, bb, bb, bb, 
+bb, ly, ly, yy, yy, bb, bb, bb, bb, bb, bb, bb, bb, bb, bb, bb, db, db, db, db, rr, rr, db, db, db, db, db, db, rr, rr, bb, rr, rr, rr, bb, bb, bb, bb, bb, bb, 
+bb, yy, ly, ly, yy, yy, bb, bb, bb, bb, bb, bb, bb, bb, bb, db, db, db, db, rr, rr, db, db, db, db, db, db, db, db, rr, rr, rr, rr, rr, bb, bb, bb, bb, bb, bb, 
+bb, yy, yy, yy, ly, yy, yy, bb, bb, bb, bb, bb, bb, bb, db, db, db, db, db, rr, db, db, db, db, db, db, db, db, db, db, rr, rr, rr, rr, bb, bb, bb, bb, bb, bb, 
+bb, ly, ly, ly, yy, ly, ly, yy, bb, bb, rr, rr, rr, rr, db, db, db, db, rr, rr, db, db, db, db, db, db, db, db, db, db, rr, rr, rr, rr, bb, bb, bb, bb, bb, bb, 
+bb, ly, ly, ly, ly, yy, yy, ly, yy, rr, rr, rr, rr, rr, rr, rr, rr, rr, rr, rr, rr, rr, rr, rr, rr, rr, rr, rr, rr, rr, rr, rr, rr, rr, bb, gg, gg, gg, bb, bb,
+bb, yy, yy, yy, yy, ly, ly, yy, yy, yy, rr, rr, yy, rr, rr, rr, rr, rr, bb, bb, rr, rr, rr, rr, rr, rr, rr, rr, rr, bb, bb, rr, rr, rr, gg, gg, gg, gg, gg, bb,
+bb, yy, yy, ly, ly, ly, ly, yy, yy, rr, rr, rr, rr, rr, rr, rr, rr, bb, gg, lg, bb, rr, rr, rr, rr, rr, rr, rr, bb, gg, lg, bb, rr, rr, gg, gg, gg, gg, gg, bb,
+bb, ly, ly, ly, yy, yy, yy, bb, bb, bb, rr, rr, rr, rr, rr, rr, rr, bb, lg, gg, bb, rr, rr, rr, rr, rr, rr, rr, bb, lg, gg, bb, rr, gg, gg, gg, gg, gg, gg, bb,
+bb, yy, yy, yy, bb, bb, bb, bb, bb, bb, bb, bb, bb, bb, bb, bb, bb, bb, bb, bb, bb, bb, bb, bb, bb, bb, bb, bb, bb, bb, bb, bb, bb, bb, bb, gg, gg, gg, bb, bb,
+};
+
+struct fb_t {
+unsigned short volatile  pixels[256][512];
+};
+
+struct fb_t *const fbp = ((struct fb_t *) 0x8000000);
+
+// assumes 16x16 sprite
+void
+sprite_draw(struct fb_t *const fbp, unsigned short sprite[], int x, int y) {
+ int sxi, syi;
+ int xi, yi;
+	
+	for (sxi = 0; sxi < 40; sxi++)
+		for (syi = 0; syi < 13; syi++) {
+		   xi = x + sxi;
+		   yi = y + syi;
+     	   fbp->pixels[yi][xi] = sprite[syi*40+sxi];
+	}
+}
+
+int xn = 320;
+int yn = 240;
+
+void
+sprite_scroll(struct fb_t *const fbp;) {
+	unsigned short *sprites[3] = {uber, uber, uber};
+	int x, y, s;
+
+    s = 0;
+	for (x = 0; x < xn; x+=1) {
+       sprite_draw(fbp, sprites[s], x, 100);
+	waitasec(2);
+	
+	}
+  
+
+}
+
+void
+solid_color(struct fb_t *const fbp, unsigned short color) {
+    int x, y;
+	for (x = 0; x < xn; x++)
+       for (y = 0; y < yn; y++) 
+          fbp->pixels[y][x] = color; // set pixel value at x,y
+}
+
+
+int
+main() {
+	
+  solid_color(fbp, 0xffff); // make all pixels white
+  sprite_scroll(fbp);  // ghost walking horizontally
+}
