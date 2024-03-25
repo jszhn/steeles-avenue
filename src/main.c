@@ -18,6 +18,7 @@
  * Function definitions
  */
 static void GameLoop (void);
+static void SetupGame (void);
 
 // Initialises, pauses, and resets embedded devices.
 static void SetupBoard (void);
@@ -41,7 +42,34 @@ int main (void) {
 }
 
 static void GameLoop (void) {
+    uint_8 game_over = 0;
+    SetupGame();
 
+    int x_position = 7, y_position = 7;
+    int x_delta, y_delta;
+    uint_8 players;
+    while (game_over == 0) { // loop while game over is false
+        // all of this updates the position of the player (or should)
+        GetUserControl(&players, &x_delta, &y_delta);
+        if (x_delta == 0 && y_delta == 0) continue;
+
+        // bounds control
+        if (x_position + x_delta >= X_MAX)
+            x_position = 0;
+        else if (x_position + x_delta < 0)
+            x_position = X_MAX - 1;
+        if (y_position + y_delta >= Y_MAX)
+            y_position = 0;
+        else if (y_position + y_delta < 0)
+            y_position = Y_MAX - 1;
+
+        PlotSpriteAtColRow(x_position + x_delta, y_position + y_delta);
+        WaitForVSync();
+    }
+}
+
+static void SetupGame (void) {
+    PlotSpriteAtColRow(7, 7);
 }
 
 static void SetupBoard (void) {
@@ -52,12 +80,11 @@ static void SetupBoard (void) {
 
 static void StartScreen (void) {
     PS2PollforChar('\n'); // checks for 'enter' key
-    WriteHexDisplayFull(0xF);
     PS2ClearFIFO();
 }
 
 static void PlayerCountScreen (void) {
-    // idk how feasible this is
+    // TODO: implement when two player is supported
 }
 
 static void EndScreen (void) {

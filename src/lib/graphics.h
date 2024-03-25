@@ -7,10 +7,15 @@
 
 #include "device_structs.h"
 #include "hardware_constants.h"
+#include "ps2.h"
 
 // colours
 #define WHITE 0xFFFF
 #define BLACK 0x0
+
+// Plots a sprite at a single row/col position.
+// This does not correspond with the screen pixel values, only our internal grid.
+void PlotSpriteAtColRow (const uint_8 row, const uint_8 col);
 
 // Swaps the values of two pointers. Used internally.
 static void Swap (int *a, int *b);

@@ -2,6 +2,16 @@
 
 PIXEL_t *const dPixelBuffer = (PIXEL_t*) PIXEL_BUF_CTRL_BASE;
 
+void PlotSpriteAtColRow (const uint_8 row, const uint_8 col) {
+    // currently only plots a single pixel at a time
+    if (row >= ROW_MAX || col >= COL_MAX) // if invalid row/col
+        return;
+
+    uint_32 x = col * COL_WIDTH;
+    uint_32 y = row * ROW_HEIGHT;
+    PlotPixel(x, y, BLACK);
+}
+
 static void Swap (int *a, int *b) {
     int temp = *a;
     *a = *b;
