@@ -1,11 +1,20 @@
 #include "other_devices.h"
 
+AUDIO_t *const dAudio = (AUDIO_t*) AUDIO_BASE;
+TIMER_t *const dTimer = (TIMER_t*) TIMER_BASE;
+TIMER_t *const dTimer2 = (TIMER_t*) TIMER_2_BASE;
+vuint_32 *const dLEDs = (vuint_32*) LEDR_BASE;
+vuint_32 *const dHEX30 = (vuint_32*) HEX3_HEX0_BASE;
+vuint_32 *const dHEX74 = (vuint_32*) HEX5_HEX4_BASE;
+
 void WriteLEDSingle (uint_8 integer_write_value) {
     if (integer_write_value > 9) integer_write_value = 9;
     *dLEDs = 0x1 << integer_write_value;
 }
 
 void WriteHexDisplayFull (uint_32 write_value) {
+    if (write_value == 0) ClearHex();
+
     uint_32 count = 0;
     vuint_32* display_addr = dHEX30;
     while (write_value > 0 && count <= 7) {
@@ -52,6 +61,11 @@ static uint_8 NumberToHexBinary (uint_8 write_value) {
         case 15: return 0b1110001; // F
         default: return 0b0111111; // 0
     }
+}
+
+void ClearHex (void) {
+    *dHEX74 = 0x0;
+    *dHEX30 = 0x0;
 }
 
 /*

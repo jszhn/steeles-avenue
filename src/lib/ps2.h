@@ -6,6 +6,7 @@
 #define PS2_H
 
 #include "device_structs.h"
+#include "other_devices.h"
 
 /*
  * Preprocessor definitions
@@ -29,6 +30,9 @@
 /*
  * Function definitions
  */
+
+// Continuously polls PS/2 for a specific comparison character.
+void PS2PollforChar (char cmp);
 
 // Returns most recently output character. Should be polled continuously.
 char PS2Read (void);

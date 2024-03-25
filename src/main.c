@@ -6,7 +6,7 @@
  */
 
 // For use in #include guards at the bottom of this file. If not using CPUlator, please comment this definition out!
-//#define CPULATOR
+#define CPULATOR
 
 #include "lib/hardware_constants.h"
 #include "lib/device_structs.h"
@@ -45,26 +45,15 @@ static void GameLoop (void) {
 }
 
 static void SetupBoard (void) {
-    dTimer->CTRL = 0xA; // stop timers
-    dTimer2->CTRL = 0xA;
-    *dHEX74 = 0x0;
-    *dHEX30 = 0x0;
+    ClearHex();
     ClearScreen();
     PS2ClearFIFO();
 }
 
 static void StartScreen (void) {
-    // draw art
-
-    // PS/2 polling for exit condition
-    uint_8 exit = 0;
-    char input;
-    while (exit == 0) {
-        if (PS2NotEmpty()) { // continuously polls PS/2 for enter key
-            input = PS2Read();
-            exit = input == '\n'; // if enter key
-        }
-    }
+    PS2PollforChar('\n'); // checks for 'enter' key
+    WriteHexDisplayFull(0xF);
+    PS2ClearFIFO();
 }
 
 static void PlayerCountScreen (void) {
@@ -72,17 +61,8 @@ static void PlayerCountScreen (void) {
 }
 
 static void EndScreen (void) {
-    // draw art
-
-    // PS/2 polling for exit condition
-    uint_8 exit = 0;
-    char input;
-    while (exit == 0) {
-        if (PS2NotEmpty()) { // continuously polls PS/2 for enter key
-            input = PS2Read();
-            exit = input == '\n'; // if enter key
-        }
-    }
+    PS2PollforChar('\n'); // checks for 'enter' key
+    PS2ClearFIFO();
 }
 
 // This ensures that GCC combines all relevant code into one file.

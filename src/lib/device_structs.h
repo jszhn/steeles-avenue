@@ -2,8 +2,8 @@
 // Structs for various parallel port devices on the DE1-SoC.
 //
 
-#ifndef DEVICE_DEVICES_H
-#define DEVICE_DEVICES_H
+#ifndef DEVICE_STRUCTS_H
+#define DEVICE_STRUCTS_H
 
 #include "address_map_nios2.h"
 
@@ -60,14 +60,5 @@ typedef struct PS2_t {
     vuint_16 RAVAIL;
     vuint_32 CTRL;
 } PS2_t;
-
-AUDIO_t *const dAudio = (AUDIO_t*) AUDIO_BASE;
-TIMER_t *const dTimer = (TIMER_t*) TIMER_BASE;
-TIMER_t *const dTimer2 = (TIMER_t*) TIMER_2_BASE;
-vuint_32 *const dLEDs = (vuint_32*) LEDR_BASE;
-vuint_32 *const dHEX30 = (vuint_32*) HEX3_HEX0_BASE;
-vuint_32 *const dHEX74 = (vuint_32*) HEX5_HEX4_BASE;
-PIXEL_t *const dPixelBuffer = (PIXEL_t*) PIXEL_BUF_CTRL_BASE;
-PS2_t *const dPS2 = (PS2_t*) PS2_BASE;
 
 #endif

@@ -1,20 +1,33 @@
 #include "ps2.h"
 
+PS2_t *const dPS2 = (PS2_t*) PS2_BASE;
+
+void PS2PollforChar (char cmp) {
+    uint_8 exit = 0;
+    char input;
+    while (exit == 0) {
+        if (PS2NotEmpty()) { // continuously polls PS/2 for enter key
+            input = PS2Read();
+            exit = input == cmp; // if enter key
+        }
+    }
+    (void) PS2Read(); // to also clear break code
+}
+
 char PS2Read (void) {
     // POLL THIS FUNCTION CONTINUOUSLY
-    uint_8 first_b, second_b; // read bytes
-    uint_8 third_b; // extra bytes for special characters
-    char ret_char;
-
     if ((dPS2->RVALID) == 0)
         return NOCHAR_PS2;
 
-    first_b = dPS2->DATA;
+    uint_8 first_b, second_b, third_b; // read bytes
+    uint_8 fourth_b, fifth_b; // extra bytes for special characters
+    char ret_char;
+
+    first_b = dPS2->DATA; second_b = dPS2->DATA;
     if (first_b == SPEC_PS2) { // checks for arrow keys
         return PS2ReadSpecialCharacter (&second_b, &third_b);
     } else {
         if (first_b == BREAK_PS2) {
-            second_b = dPS2->DATA;
             return NOCHAR_PS2;
         }
         switch (first_b) {
@@ -37,7 +50,6 @@ char PS2Read (void) {
 }
 
 static char PS2ReadSpecialCharacter (uint_8 *second_b, uint_8 *third_b) {
-    *second_b = dPS2->DATA;
     if (*second_b == BREAK_PS2) { // checks for break key
         *third_b = dPS2->DATA; // clears next key in output FIFO
         return NOCHAR_PS2;

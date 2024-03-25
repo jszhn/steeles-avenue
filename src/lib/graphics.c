@@ -1,5 +1,7 @@
 #include "graphics.h"
 
+PIXEL_t *const dPixelBuffer = (PIXEL_t*) PIXEL_BUF_CTRL_BASE;
+
 static void Swap (int *a, int *b) {
     int temp = *a;
     *a = *b;
