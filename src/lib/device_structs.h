@@ -11,7 +11,7 @@
 typedef volatile unsigned int vuint_32;
 // 16-bit volatile unsigned integer
 typedef volatile unsigned short int vuint_16;
-// 8-bit volatile unsigned integer
+// 8-bit volatile unsigned integer (char)
 typedef volatile unsigned char vuint_8;
 
 // 32-bit unsigned integer

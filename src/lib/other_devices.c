@@ -8,7 +8,7 @@ void WriteLEDSingle (uint_8 integer_write_value) {
 void WriteHexDisplayFull (uint_32 write_value) {
     uint_32 count = 0;
     vuint_32* display_addr = dHEX30;
-    while (write_value > 0) {
+    while (write_value > 0 && count <= 7) {
         if (count > 3) display_addr = dHEX74;
         WriteHexDisplaySingle(count, write_value % 16);
 

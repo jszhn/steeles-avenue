@@ -24,11 +24,13 @@ static void PlayerCountScreen (void);
 
 int main (void) {
     SetupBoard();
-    StartScreen();
+//    StartScreen();
 
     while (1) {
 //        if ((dPS2->RVALID & 0x8000) != 0)
 //            WriteHexDisplaySingle(0, 1);
+        WriteHexDisplayFull(0xFFFFFFF);
+        break;
     }
 }
 
