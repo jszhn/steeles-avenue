@@ -10,7 +10,7 @@
 
 void WriteLEDSingle (uint_8 integer_write_value);
 void WriteHexDisplayFull (uint_32 write_value);
-static void WriteHexDisplaySingle (uint_8 display_num, uint_32 write_value);
+void WriteHexDisplaySingle (uint_8 display_num, uint_32 write_value);
 static uint_8 NumberToHexBinary (uint_8 write_value);
 void ClearHex (void);
 

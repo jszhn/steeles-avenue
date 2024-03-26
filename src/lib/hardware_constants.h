@@ -10,6 +10,8 @@
 #define Y_MAX 240
 #define TIMER_MAX 100000000
 
+#define ONES 0b11111111111111111111111111111111
+
 // game specific numbers
 #define COL_MAX 16
 #define COL_WIDTH 20

@@ -49,9 +49,15 @@ static void GameLoop (void) {
     int x_delta, y_delta;
     uint_8 players;
     while (game_over == 0) { // loop while game over is false
-        // all of this updates the position of the player (or should)
+        // all of these updates the position of the player (or should)
         GetUserControl(&players, &x_delta, &y_delta);
+
         if (x_delta == 0 && y_delta == 0) continue;
+
+        vuint_32 *const dLEDs = (vuint_32*) LEDR_BASE;
+        uint_32 led = *dLEDs;
+        led++;
+        *dLEDs = led;
 
         // bounds control
         if (x_position + x_delta >= X_MAX)

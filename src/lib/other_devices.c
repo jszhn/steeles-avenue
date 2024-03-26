@@ -16,19 +16,16 @@ void WriteHexDisplayFull (uint_32 write_value) {
     if (write_value == 0) ClearHex();
 
     uint_32 count = 0;
-    vuint_32* display_addr = dHEX30;
-    while (write_value > 0 && count <= 7) {
-        if (count > 3) display_addr = dHEX74;
+    while (count <= 7) { // iterates through each display
         WriteHexDisplaySingle(count, write_value % 16);
-
-        write_value /= 16;
+        write_value /= 16; // updates value
         count++;
     }
 }
 
 void WriteHexDisplaySingle (uint_8 display_num, uint_32 write_value) {
     // display num ranges from 0-7
-    write_value = write_value & 0b1111111; // truncate write value to ensure no interference
+    write_value = write_value & 0b11111111; // truncate write value to ensure no interference
     vuint_32* display_addr;
 
     if (display_num > 3) {
@@ -38,7 +35,7 @@ void WriteHexDisplaySingle (uint_8 display_num, uint_32 write_value) {
         display_addr = dHEX30;
 
     write_value = NumberToHexBinary(write_value);
-    uint_32 temp = *display_addr & (0x0 << (display_num * 8)); // clears specific display without overwriting others
+    uint_32 temp = *display_addr & (ONES ^ (0b11111111 << (display_num * 8))); // selectively clears a single display
     *display_addr = temp | (write_value << (display_num * 8)); // writes to HEX display
 }
 
