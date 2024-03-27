@@ -1,5 +1,9 @@
 /// TIMER DELAY
 
+#include <stdio.h>
+#include <string.h>
+#include <stdlib.h>
+
 struct timer_t {
        volatile unsigned int status;
        volatile unsigned int control;
@@ -58,6 +62,16 @@ waitasec(int pow_fraction) {
 #define ww 0xFFFF // white
 #define dd 0x089E // zum blue
 #define pi 0xFE1B // pink
+
+	/*
+unsigned short lanes[] = {bb, bb, bb}
+unsigned short car[] = {bb, yy, ly}
+unsigned short go[] = {lg, ww, bb}
+unsigned short ttc[] = {yy, rr, ly}
+unsigned short zum[] = {bb, rr, lg}
+unsigned short raccoon[] = {rr, yy, bb}
+unsigned short uber[] = {ww, bb, yy}
+*/
 
 
 unsigned short lanes[] = {
@@ -160,6 +174,7 @@ bb, lg, lg, lg, lg, lg, lg, gg, bb, lg, gg, bb, gg, gg, gg, gg, gg, gg, gg, bb, 
 bb, bb, lg, lg, lg, bb, bb, bb, bb, bb, bb, bb, bb, bb, bb, bb, bb, bb, bb, bb, bb, bb, bb, bb, bb, bb, bb, bb, bb, bb, bb, bb, bb, bb, bb, bb, db, db, db, bb,
 };
 
+
 struct fb_t {
 unsigned short volatile  pixels[256][512];
 };
@@ -223,8 +238,27 @@ sprite_scroll(struct fb_t *const fbp;) {
 	sprite_draw(fbp, lanes, x, 139, 4);
 	sprite_draw(fbp, lanes, x, 153, 4);
 	sprite_draw(fbp, lanes, x, 154, 4);
+	
+	for (x = 0; x < 360; x+=1){
+		for (y = 0; y < 240; y += 15){
+			int car_type = rand() % 6;
+			if (car_type == 0){
+				sprite_draw(fbp, ttc, x, y, 3);
+			}else if (car_type == 1){
+				sprite_draw(fbp, uber, x, y, 2);
+			}else if (car_type == 2){
+				sprite_draw(fbp, go, 320-x, y, 3);
+			}else if (car_type == 3){
+				sprite_draw(fbp, zum, 320-x, y, 3);
+			}else if (car_type == 4){
+				sprite_draw(fbp, car, 320-x, y, 2);
+			}
+		}
+	}
+			/*
 	while (1){
 		for (x = 0; x < 380; x+=1){
+			
 			sprite_draw(fbp, ttc, x, 110, 3);
 			sprite_draw(fbp, uber, x, 140, 2);
 			sprite_draw(fbp, raccoon, x, 155, 1);
@@ -239,6 +273,7 @@ sprite_scroll(struct fb_t *const fbp;) {
 		sprite_draw(fbp, zum, x, 100, 3);
 		sprite_draw(fbp, car, x, 140, 2);
 	}
+	*/
 }
 
 
