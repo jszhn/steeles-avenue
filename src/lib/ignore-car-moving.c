@@ -226,22 +226,22 @@ int yn = 240;
 void
 sprite_scroll(struct fb_t *const fbp;) {
 	int x, y;
-	sprite_draw(fbp, lanes, x, 78, 4);
-	sprite_draw(fbp, lanes, x, 79, 4);
-	sprite_draw(fbp, lanes, x, 93, 4);
-	sprite_draw(fbp, lanes, x, 94, 4);
-	sprite_draw(fbp, lanes, x, 108, 4);
-	sprite_draw(fbp, lanes, x, 109, 4);
-	sprite_draw(fbp, lanes, x, 123, 4);
-	sprite_draw(fbp, lanes, x, 124, 4);
-	sprite_draw(fbp, lanes, x, 138, 4);
-	sprite_draw(fbp, lanes, x, 139, 4);
-	sprite_draw(fbp, lanes, x, 153, 4);
-	sprite_draw(fbp, lanes, x, 154, 4);
+	for(int y = 13; y < 230; y+=15){
+		sprite_draw(fbp, lanes, x, y, 4);
+	}
+	for(int y = 14; y < 230; y+=15){
+		sprite_draw(fbp, lanes, x, y, 4);
+	}
 	
-	for (x = 0; x < 360; x+=1){
-		for (y = 0; y < 240; y += 15){
+	//int car_type[6];
+	//for (int i; i < 6; i++){
+		//car_type[i] = rand() % 6;
+	
+	// array to store location, only need x for loop, update locations, etc etc etc
+	
+		for (x = 0; x < 380; x += 1){
 			int car_type = rand() % 6;
+			for (y = 0; y < 240; y+=15){
 			if (car_type == 0){
 				sprite_draw(fbp, ttc, x, y, 3);
 			}else if (car_type == 1){
@@ -253,8 +253,9 @@ sprite_scroll(struct fb_t *const fbp;) {
 			}else if (car_type == 4){
 				sprite_draw(fbp, car, 320-x, y, 2);
 			}
+			}
 		}
-	}
+	
 			/*
 	while (1){
 		for (x = 0; x < 380; x+=1){
@@ -290,5 +291,5 @@ int
 main() {
 	
   solid_color(fbp, 0x0000); // make all pixels white
-  sprite_scroll(fbp);  // ghost walking horizontally
+  sprite_scroll(fbp);
 }
