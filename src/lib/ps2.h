@@ -29,7 +29,7 @@
  * Function definitions
  */
 
-void GetUserControl (uint_8* player_num, int* x_movement, int* y_movement);
+void GetUserControl (int* x_movement, int* y_movement);
 
 // Continuously polls PS/2 for a specific comparison character.
 void PS2PollforChar (char cmp);

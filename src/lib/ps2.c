@@ -2,50 +2,27 @@
 
 PS2_t *const dPS2 = (PS2_t*) PS2_BASE;
 
-void GetUserControl (uint_8* player_num, int* x_movement, int* y_movement) {
-    *player_num = 0; // stores player num as binary num; bit 0: player 0, bit 1: player 1
-    while (PS2Empty() == 0) {
+void GetUserControl (int* x_movement, int* y_movement) {
+//    while (PS2Empty() == 0) {
         char in = PS2Read();
-        WriteHexDisplayFull(in);
         switch (in) {
             case 'W':
                 *y_movement = 1;
-                *player_num |= 0x1;
                 break;
             case 'A':
                 *x_movement = -1;
-                *player_num |= 0x1;
                 break;
             case 'S':
                 *y_movement = -1;
-                *player_num |= 0x1;
                 break;
             case 'D':
                 *x_movement = 1;
-                *player_num |= 0x1;
                 break;
-            case 'J':
-                *(x_movement + 1) = -1;
-                *player_num |= 0x2;
-                break;
-            case 'K':
-                *(y_movement + 1) = -1;
-                *player_num |= 0x2;
-                break;
-            case 'I':
-                *(y_movement + 1) = 1;
-                *player_num |= 0x2;
-                break;
-            case 'L':
-                *(x_movement + 1) = 1;
-                *player_num |= 0x2;
-                break;
-//            case '~': // pause screen
             default:
-                *x_movement = 0;
-                *y_movement = 0;
+                *x_movement = *x_movement;
+                *y_movement = *y_movement;
         }
-    }
+//    }
 }
 
 void PS2PollforChar (char cmp) {
@@ -62,7 +39,7 @@ void PS2PollforChar (char cmp) {
 
 char PS2Read (void) {
     // POLL THIS FUNCTION CONTINUOUSLY
-    if ((dPS2->RVALID) == 0)
+    if (PS2Empty())
         return NOCHAR_PS2;
 
     uint_8 first_b, second_b, third_b; // read bytes
@@ -99,7 +76,7 @@ char PS2Read (void) {
 }
 
 uint_8 PS2Empty (void) { // true if empty, false if there's elements
-    return dPS2->RVALID & 0b10000000 == 0;
+    return (dPS2->RVALID & 0b10000000) == 0;
 }
 
 void PS2ClearFIFO (void) {

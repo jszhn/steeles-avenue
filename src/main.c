@@ -25,7 +25,7 @@ static void SetupBoard (void);
 
 // Static screen displays.
 static void StartScreen (void);
-static void PlayerCountScreen (void);
+//static void PlayerCountScreen (void);
 static void EndScreen (void);
 
 /*
@@ -46,31 +46,27 @@ static void GameLoop (void) {
     SetupGame();
 
     int x_position = 7, y_position = 7;
-    int x_delta, y_delta;
+    int x_delta = 0, y_delta = 0;
     uint_8 players;
     while (game_over == 0) { // loop while game over is false
-        // all of these updates the position of the player (or should)
-        GetUserControl(&players, &x_delta, &y_delta);
+        // all of these updates the position of the player
+        GetUserControl(&x_delta, &y_delta);
 
         if (x_delta == 0 && y_delta == 0) continue;
+        WriteLEDSingle(8);
 
-        vuint_32 *const dLEDs = (vuint_32*) LEDR_BASE;
-        uint_32 led = *dLEDs;
-        led++;
-        *dLEDs = led;
+        // bounds control for sprite
+        if (x_position + x_delta >= X_MAX) x_position = 0;
+        else if (x_position + x_delta < 0) x_position = X_MAX - 1;
+        if (y_position + y_delta >= Y_MAX) y_position = 0;
+        else if (y_position + y_delta < 0) y_position = Y_MAX - 1;
 
-        // bounds control
-        if (x_position + x_delta >= X_MAX)
-            x_position = 0;
-        else if (x_position + x_delta < 0)
-            x_position = X_MAX - 1;
-        if (y_position + y_delta >= Y_MAX)
-            y_position = 0;
-        else if (y_position + y_delta < 0)
-            y_position = Y_MAX - 1;
+        x_position += x_delta; y_position += y_delta;
+        PlotSpriteAtColRow(x_position, y_position);
 
-        PlotSpriteAtColRow(x_position + x_delta, y_position + y_delta);
+        // reset variables to prepare for next loop
         WaitForVSync();
+        x_delta = 0; y_delta = 0;
     }
 }
 
@@ -87,10 +83,6 @@ static void SetupBoard (void) {
 static void StartScreen (void) {
     PS2PollforChar('\n'); // checks for 'enter' key
     PS2ClearFIFO();
-}
-
-static void PlayerCountScreen (void) {
-    // TODO: implement when two player is supported
 }
 
 static void EndScreen (void) {

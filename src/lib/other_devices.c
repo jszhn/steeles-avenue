@@ -1,6 +1,5 @@
 #include "other_devices.h"
 
-AUDIO_t *const dAudio = (AUDIO_t*) AUDIO_BASE;
 TIMER_t *const dTimer = (TIMER_t*) TIMER_BASE;
 TIMER_t *const dTimer2 = (TIMER_t*) TIMER_2_BASE;
 vuint_32 *const dLEDs = (vuint_32*) LEDR_BASE;
