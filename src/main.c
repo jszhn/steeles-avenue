@@ -6,7 +6,7 @@
  */
 
 // For use in #include guards at the bottom of this file. If not using CPUlator, please comment this definition out!
-//#define CPULATOR
+#define CPULATOR
 
 #include "lib/hardware_constants.h"
 #include "lib/device_structs.h"
@@ -18,13 +18,14 @@
  * Function definitions
  */
 static void GameLoop (void);
+static void SetupGame (void);
 
 // Initialises, pauses, and resets embedded devices.
 static void SetupBoard (void);
 
 // Static screen displays.
 static void StartScreen (void);
-static void PlayerCountScreen (void);
+//static void PlayerCountScreen (void);
 static void EndScreen (void);
 
 /*
@@ -41,48 +42,52 @@ int main (void) {
 }
 
 static void GameLoop (void) {
+    uint_8 game_over = 0;
+    SetupGame();
 
+    int x_position = 7, y_position = 7;
+    int x_delta = 0, y_delta = 0;
+    uint_8 players;
+    while (game_over == 0) { // loop while game over is false
+        // all of these updates the position of the player
+        GetUserControl(&x_delta, &y_delta);
+
+        if (x_delta == 0 && y_delta == 0) continue;
+        WriteLEDSingle(8);
+
+        // bounds control for sprite
+        if (x_position + x_delta >= X_MAX) x_position = 0;
+        else if (x_position + x_delta < 0) x_position = X_MAX - 1;
+        if (y_position + y_delta >= Y_MAX) y_position = 0;
+        else if (y_position + y_delta < 0) y_position = Y_MAX - 1;
+
+        x_position += x_delta; y_position += y_delta;
+        PlotSpriteAtColRow(x_position, y_position);
+
+        // reset variables to prepare for next loop
+        WaitForVSync();
+        x_delta = 0; y_delta = 0;
+    }
+}
+
+static void SetupGame (void) {
+    PlotSpriteAtColRow(7, 7);
 }
 
 static void SetupBoard (void) {
-    dTimer->CTRL = 0xA; // stop timers
-    dTimer2->CTRL = 0xA;
-    *dHEX74 = 0x0;
-    *dHEX30 = 0x0;
+    ClearHex();
     ClearScreen();
     PS2ClearFIFO();
 }
 
 static void StartScreen (void) {
-    // draw art
-
-    // PS/2 polling for exit condition
-    uint_8 exit = 0;
-    char input;
-    while (exit == 0) {
-        if (PS2NotEmpty()) { // continuously polls PS/2 for enter key
-            input = PS2Read();
-            exit = input == '\n'; // if enter key
-        }
-    }
-}
-
-static void PlayerCountScreen (void) {
-    // idk how feasible this is
+    PS2PollforChar('\n'); // checks for 'enter' key
+    PS2ClearFIFO();
 }
 
 static void EndScreen (void) {
-    // draw art
-
-    // PS/2 polling for exit condition
-    uint_8 exit = 0;
-    char input;
-    while (exit == 0) {
-        if (PS2NotEmpty()) { // continuously polls PS/2 for enter key
-            input = PS2Read();
-            exit = input == '\n'; // if enter key
-        }
-    }
+    PS2PollforChar('\n'); // checks for 'enter' key
+    PS2ClearFIFO();
 }
 
 // This ensures that GCC combines all relevant code into one file.

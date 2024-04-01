@@ -6,6 +6,7 @@
 #define PS2_H
 
 #include "device_structs.h"
+#include "other_devices.h"
 
 /*
  * Preprocessor definitions
@@ -19,16 +20,19 @@
 #define A_PS2 0x1C
 #define S_PS2 0x1B
 #define D_PS2 0x23
-
-#define SPEC_PS2 0xE0
-#define UP_PS2 0x75
-#define DOWN_PS2 0x72
-#define LEFT_PS2 0x6B
-#define RIGHT_PS2 0x74
+#define I_PS2 0x43
+#define J_PS2 0x3B
+#define K_PS2 0x42
+#define L_PS2 0x4B
 
 /*
  * Function definitions
  */
+
+void GetUserControl (int* x_movement, int* y_movement);
+
+// Continuously polls PS/2 for a specific comparison character.
+void PS2PollforChar (char cmp);
 
 // Returns most recently output character. Should be polled continuously.
 char PS2Read (void);
@@ -36,8 +40,8 @@ char PS2Read (void);
 // For internal use within PS2Read(). Returns a special character.
 static char PS2ReadSpecialCharacter (uint_8 *second_b, uint_8 *third_b);
 
-// Boolean function to check if the PS/2 FIFO is empty.
-uint_8 PS2NotEmpty (void);
+// Returns non-zero if PS/2 output FIFO is empty. Returns zero if it is.
+uint_8 PS2Empty (void);
 
 // Clears PS/2 output FIFO.
 void PS2ClearFIFO (void);

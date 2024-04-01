@@ -2,3 +2,4 @@
 cmake-build-debug/
 main.i
 main.s
+CMakeLists.txt
