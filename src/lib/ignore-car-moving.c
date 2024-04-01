@@ -1,5 +1,9 @@
 /// TIMER DELAY
 
+#include <stdio.h>
+#include <string.h>
+#include <stdlib.h>
+
 struct timer_t {
        volatile unsigned int status;
        volatile unsigned int control;
@@ -58,6 +62,16 @@ waitasec(int pow_fraction) {
 #define ww 0xFFFF // white
 #define dd 0x089E // zum blue
 #define pi 0xFE1B // pink
+
+	/*
+unsigned short lanes[] = {bb, bb, bb}
+unsigned short car[] = {bb, yy, ly}
+unsigned short go[] = {lg, ww, bb}
+unsigned short ttc[] = {yy, rr, ly}
+unsigned short zum[] = {bb, rr, lg}
+unsigned short raccoon[] = {rr, yy, bb}
+unsigned short uber[] = {ww, bb, yy}
+*/
 
 
 unsigned short lanes[] = {
@@ -160,14 +174,33 @@ bb, lg, lg, lg, lg, lg, lg, gg, bb, lg, gg, bb, gg, gg, gg, gg, gg, gg, gg, bb, 
 bb, bb, lg, lg, lg, bb, bb, bb, bb, bb, bb, bb, bb, bb, bb, bb, bb, bb, bb, bb, bb, bb, bb, bb, bb, bb, bb, bb, bb, bb, bb, bb, bb, bb, bb, bb, db, db, db, bb,
 };
 
+
 struct fb_t {
 unsigned short volatile  pixels[256][512];
 };
 
 struct fb_t *const fbp = ((struct fb_t *) 0x8000000);
 
-void 
-sprite_draw(struct fb_t *const fbp, unsigned short sprite[], int x, int y, int size) {
+
+struct Obstacle {
+	int car_type;
+	int xleft;
+	int xright;
+	int yup;
+	int ydown;
+};
+
+struct Obstacle cars[15];
+
+void instantiate_cars(){
+		for (int i = 0; i < 16; i++){
+			cars[i].car_type = rand() % 5;
+			cars[i].yup = i*15 + 15;
+			cars[i].xleft = rand() % 320;
+		}
+}
+
+void sprite_draw(struct fb_t *const fbp, unsigned short sprite[], int x, int y, int size) {
  int sxi, syi;
  int xi, yi;
 	if(size == 4){
@@ -211,20 +244,45 @@ int yn = 240;
 void
 sprite_scroll(struct fb_t *const fbp;) {
 	int x, y;
-	sprite_draw(fbp, lanes, x, 78, 4);
-	sprite_draw(fbp, lanes, x, 79, 4);
-	sprite_draw(fbp, lanes, x, 93, 4);
-	sprite_draw(fbp, lanes, x, 94, 4);
-	sprite_draw(fbp, lanes, x, 108, 4);
-	sprite_draw(fbp, lanes, x, 109, 4);
-	sprite_draw(fbp, lanes, x, 123, 4);
-	sprite_draw(fbp, lanes, x, 124, 4);
-	sprite_draw(fbp, lanes, x, 138, 4);
-	sprite_draw(fbp, lanes, x, 139, 4);
-	sprite_draw(fbp, lanes, x, 153, 4);
-	sprite_draw(fbp, lanes, x, 154, 4);
+	for(int y = 13; y < 230; y+=15){
+		sprite_draw(fbp, lanes, x, y, 4);
+	}
+	for(int y = 14; y < 230; y+=15){
+		sprite_draw(fbp, lanes, x, y, 4);
+	}
+	// array to store location, only need x for loop, update locations, etc etc etc
+	while (1){
+		for (x = 0; x < 500; x += 1){
+			for (int i = 0; i < 16; i += 1){
+				if (cars[i].car_type == 0){
+					sprite_draw(fbp, ttc, cars[i].xleft + x, cars[i].yup, 3);
+				} else if (cars[i].car_type == 1){
+					sprite_draw(fbp, uber, cars[i].xleft + x, cars[i].yup, 2);
+				} else if (cars[i].car_type == 2){
+					sprite_draw(fbp, go, 320-(cars[i].xleft + x), cars[i].yup, 3);
+				} else if (cars[i].car_type == 3){
+					sprite_draw(fbp, zum, 320-(cars[i].xleft + x), cars[i].yup, 3);
+				} else if (cars[i].car_type == 4){
+					sprite_draw(fbp, car, 320-(cars[i].xleft + x), cars[i].yup, 2);
+				}
+				
+			}
+		}
+		solid_color(fbp, 0x0000);
+			int x;
+			int y;
+			for(int y = 13; y < 230; y+=15){
+				sprite_draw(fbp, lanes, x, y, 4);
+			}
+			for(int y = 14; y < 230; y+=15){
+				sprite_draw(fbp, lanes, x, y, 4);
+			}
+	}
+	
+			/*
 	while (1){
 		for (x = 0; x < 380; x+=1){
+			
 			sprite_draw(fbp, ttc, x, 110, 3);
 			sprite_draw(fbp, uber, x, 140, 2);
 			sprite_draw(fbp, raccoon, x, 155, 1);
@@ -239,6 +297,7 @@ sprite_scroll(struct fb_t *const fbp;) {
 		sprite_draw(fbp, zum, x, 100, 3);
 		sprite_draw(fbp, car, x, 140, 2);
 	}
+	*/
 }
 
 
@@ -255,5 +314,6 @@ int
 main() {
 	
   solid_color(fbp, 0x0000); // make all pixels white
-  sprite_scroll(fbp);  // ghost walking horizontally
+  instantiate_cars();
+  sprite_scroll(fbp);
 }
