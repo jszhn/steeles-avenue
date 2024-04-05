@@ -3,26 +3,25 @@
 PS2_t *const dPS2 = (PS2_t*) PS2_BASE;
 
 void GetUserControl (int* x_movement, int* y_movement) {
-//    while (PS2Empty() == 0) {
-        char in = PS2Read();
-        switch (in) {
-            case 'W':
-                *y_movement = 1;
-                break;
-            case 'A':
-                *x_movement = -1;
-                break;
-            case 'S':
-                *y_movement = -1;
-                break;
-            case 'D':
-                *x_movement = 1;
-                break;
-            default:
-                *x_movement = *x_movement;
-                *y_movement = *y_movement;
-        }
-//    }
+    char in = PS2Read();
+    switch (in) {
+        case 'W':
+            *y_movement = 1;
+            break;
+        case 'A':
+            *x_movement = 1;
+            break;
+        case 'S':
+            *y_movement = -1;
+            break;
+        case 'D':
+            *x_movement = -1;
+            break;
+        default:
+            *x_movement = *x_movement;
+            *y_movement = *y_movement;
+    }
+    PS2ClearFIFO();
 }
 
 void PS2PollforChar (char cmp) {
@@ -57,22 +56,11 @@ char PS2Read (void) {
             return 'S';
         case (D_PS2):
             return 'D';
-        case (I_PS2):
-            return 'I';
-        case (J_PS2):
-            return 'J';
-        case (K_PS2):
-            return 'K';
-        case (L_PS2):
-            return 'L';
-        case (ESC_PS2):
-            return '~';
         case (ENTER_PS2):
             return '\n';
         default:
             return NOCHAR_PS2;
     }
-
 }
 
 uint_8 PS2Empty (void) { // true if empty, false if there's elements

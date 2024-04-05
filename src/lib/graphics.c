@@ -25,7 +25,7 @@ uint_16 RGBtoColour (uint_8 red, uint_8 green, uint_8 blue) {
 }
 
 void PlotPixel (uint_32 x, uint_32 y, short int line_colour) {
-    volatile short int *one_pixel_address = &buffer[y][x];
+    volatile short int *one_pixel_address = &buffer[x][y];
     *one_pixel_address = line_colour;
 }
 

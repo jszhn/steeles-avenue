@@ -4,11 +4,9 @@
 #include <string.h>
 #include <stdlib.h>
 
-// 16x16 sprites as unidimensional arrays :(
-// converted from:
-// https://opengameart.org/content/chibi-monsters-set-01
-// made by ansimuz.com
-
+/*
+ * Colour definitions
+ */
 // grey 0x52AA
 // black 0x0000
 // red 0xF000
@@ -37,9 +35,13 @@
 #define dd 0x089E // zum blue
 #define pi 0xFE1B // pink
 
+/*
+ * Hardware constant definitions
+ */
 #define X_MAX 320
 #define Y_MAX 240
 #define TIMER_MAX 100000000
+#define TIMERSEC 100000000
 
 #define ONES 0b11111111111111111111111111111111
 
@@ -50,6 +52,9 @@
 #define ROW_MAX 16
 #define ROW_HEIGHT 15
 
+/*
+ * PS2 constant definitions
+ */
 #define NOCHAR_PS2 0x20 // used for invalid PS2 input or non-mapped characters
 #define BREAK_PS2 0xF0
 #define ESC_PS2 0x76
@@ -63,6 +68,9 @@
 #define K_PS2 0x42
 #define L_PS2 0x4B
 
+/*
+ * Nios II DE1-Soc address map
+ */
 #define BOARD				"DE1-SoC"
 
 /* Memory */
@@ -113,15 +121,9 @@
 #define HPS_TIMER3_BASE			0xFFD01000
 #define FPGA_BRIDGE			0xFFD0501C
 
-#define TIMERSEC 100000000
-
-/* 
-
-                    DEVICE STRUCTS
-
-
-*/
-
+/*
+ * Typedefs
+ */
 // 32-bit volatile unsigned integer
 typedef volatile unsigned int vuint_32;
 // 16-bit volatile unsigned integer
@@ -136,6 +138,9 @@ typedef unsigned short int uint_16;
 // 8-bit unsigned integer (char)
 typedef unsigned char uint_8;
 
+/*
+ * Device structs
+ */
 typedef struct AUDIO_t {
     volatile unsigned int CTRL;
     volatile unsigned char RARC;
@@ -176,12 +181,6 @@ typedef struct PS2_t {
     vuint_32 CTRL;
 } PS2_t;
 
-/*
-
-                    END OF DEVICE STRUCTS
-
-*/
-
 struct timer_t {
        volatile unsigned int status;
        volatile unsigned int control;
@@ -192,11 +191,10 @@ struct timer_t {
 };
 
 struct fb_t {
-unsigned short volatile  pixels[256][512];
+    unsigned short volatile  pixels[256][512];
 };
 
 struct fb_t *const fbp = ((struct fb_t *) 0x8000000);
-
 
 struct Obstacle {
 	int car_type;
@@ -208,6 +206,9 @@ struct Obstacle {
 
 struct timer_t * const timer = (struct timer_t *) 0xFF202000;
 
+/*
+ * Image arrays
+ */
 unsigned short lanes[] = {
 bb, bb, bb, bb, bb, bb, bb, bb, ww, ww, ww, ww, ww, bb, bb, bb, bb, bb, bb, bb, bb, bb, bb, bb, bb, bb, bb, bb, ww, ww, ww, ww, ww, bb, bb, bb, bb, bb, bb, bb, bb, bb, bb, bb, bb, bb, bb, bb, ww, ww, ww, ww, ww, bb, bb, bb, bb, bb, bb, bb, bb, bb, bb, bb, bb, bb, bb, bb, ww, ww, ww, ww, ww, bb, bb, bb, bb, bb, bb, bb, bb, bb, bb, bb, bb, bb, bb, bb, ww, ww, ww, ww, ww, bb, bb, bb, bb, bb, bb, bb, bb, bb, bb, bb, bb, bb, bb, bb, ww, ww, ww, ww, ww, bb, bb, bb, bb, bb, bb, bb, bb, bb, bb, bb, bb, bb, bb, bb, ww, ww, ww, ww, ww, bb, bb, bb, bb, bb, bb, bb, bb, bb, bb, bb, bb, bb, bb, bb, ww, ww, ww, ww, ww, bb, bb, bb, bb, bb, bb, bb, bb, bb, bb, bb, bb, bb, bb, bb, ww, ww, ww, ww, ww, bb, bb, bb, bb, bb, bb, bb, bb, bb, bb, bb, bb, bb, bb, bb, ww, ww, ww, ww, ww, bb, bb, bb, bb, bb, bb, bb, bb, bb, bb, bb, bb, bb, bb, bb, ww, ww, ww, ww, ww, bb, bb, bb, bb, bb, bb, bb, bb, bb, bb, bb, bb, bb, bb, bb, ww, ww, ww, ww, ww, bb, bb, bb, bb, bb, bb, bb, bb, bb, bb, bb, bb, bb, bb, bb, ww, ww, ww, ww, ww, bb, bb, bb, bb, bb, bb, bb, bb, bb, bb, bb, bb, bb, bb, bb, ww, ww, ww, ww, ww, bb, bb, bb, bb, bb, bb, bb, bb, bb, bb, bb, bb, bb, bb, bb, ww, ww, ww, ww, ww, bb, bb, bb, bb, bb, bb, bb, bb, bb, bb, bb, bb, bb, bb, bb, ww, ww, ww, ww, ww, bb, bb, bb, bb, bb, bb, bb,
 };

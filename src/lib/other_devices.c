@@ -68,7 +68,7 @@ void ClearHex (void) {
  * Timer utilities
  */
 int SecondsToTicks (double const seconds) {
-    return (int) (seconds * TIMER_MAX);
+    return (int) (seconds * TIMER_SEC);
 }
 
 void SetTimer (unsigned int const ticks) {

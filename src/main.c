@@ -46,25 +46,25 @@ static void GameLoop (void) {
     uint_8 game_over = 0;
     SetupGame();   
 
-    int x_position = 7, y_position = 7;
+    int x_position = X_MAX / 2, y_position = Y_MAX;
     int x_delta = 0, y_delta = 0;
     uint_8 players;
     while (game_over == 0) { // loop while game over is false
         // all of these updates the position of the player
         GetUserControl(&x_delta, &y_delta);
+        if (x_delta != 0 || y_delta != 0) {
+            // bounds control for sprite
+            if (x_position + x_delta >= X_MAX) x_position = 0;
+            else if (x_position + x_delta < 0) x_position = X_MAX - 1;
+            if (y_position + y_delta >= Y_MAX) y_position = 0;
+            else if (y_position + y_delta < 0) y_position = Y_MAX - 1;
 
-        if (x_delta == 0 && y_delta == 0) continue;
-        WriteLEDSingle(8);
-
-        // bounds control for sprite
-        if (x_position + x_delta >= X_MAX) x_position = 0;
-        else if (x_position + x_delta < 0) x_position = X_MAX - 1;
-        if (y_position + y_delta >= Y_MAX) y_position = 0;
-        else if (y_position + y_delta < 0) y_position = Y_MAX - 1;
-
-        x_position += x_delta; y_position += y_delta;
-        PlotSpriteAtColRow(x_position, y_position);
-
+            x_position += x_delta;
+            y_position += y_delta;
+            PlotSpriteAtColRow(x_position, y_position);
+            WriteHexDisplaySingle(5, x_position);
+            WriteHexDisplaySingle(0, y_position);
+        }
         // reset variables to prepare for next loop
         WaitForVSync();
         x_delta = 0; y_delta = 0;
