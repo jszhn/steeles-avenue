@@ -13,6 +13,7 @@
 #include "lib/graphics.h"
 #include "lib/ps2.h"
 #include "lib/other_devices.h"
+#include "lib/car_moving.h"
 
 /*
  * Function definitions
@@ -43,7 +44,7 @@ int main (void) {
 
 static void GameLoop (void) {
     uint_8 game_over = 0;
-    SetupGame();
+    SetupGame();   
 
     int x_position = 7, y_position = 7;
     int x_delta = 0, y_delta = 0;
@@ -97,5 +98,6 @@ static void EndScreen (void) {
 #include "lib/graphics.c"
 #include "lib/ps2.c"
 #include "lib/other_devices.c"
+#include "lib/car_moving.c"
 
 #endif
