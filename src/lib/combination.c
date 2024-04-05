@@ -367,13 +367,13 @@ void GetUserControl (int* x_movement, int* y_movement) {
         char in = PS2Read();
         switch (in) {
             case 'W':
-                *y_movement = 1;
+                *y_movement = -1;
                 break;
             case 'A':
                 *x_movement = -1;
                 break;
             case 'S':
-                *y_movement = -1;
+                *y_movement = 1;
                 break;
             case 'D':
                 *x_movement = 1;
@@ -555,13 +555,23 @@ void solid_color(struct fb_t *const fbp, unsigned short color) {
 
 static void GameLoop (void) {
     uint_8 game_over = 0;
-    SetupGame();   
+    //SetupGame();   
 
     int x_position = 7, y_position = 7;
     int x_delta = 0, y_delta = 0;
     uint_8 players;
+	
     while (game_over == 0) { // loop while game over is false
         // all of these updates the position of the player
+		
+		int x, y;
+		for(int y = 13; y < 230; y+=15){
+			sprite_draw(fbp, lanes, x, y, 4);
+		}
+		for(int y = 14; y < 230; y+=15){
+			sprite_draw(fbp, lanes, x, y, 4);
+		}
+		
         GetUserControl(&x_delta, &y_delta);
 
         if (x_delta == 0 && y_delta == 0) continue;
@@ -574,7 +584,8 @@ static void GameLoop (void) {
         else if (y_position + y_delta < 0) y_position = Y_MAX - 1;
 
         x_position += x_delta; y_position += y_delta;
-        PlotSpriteAtColRow(x_position, y_position);
+        sprite_draw(fbp, raccoon, x_position*COL_WIDTH, y_position*ROW_HEIGHT, 1);
+		//PlotSpriteAtColRow(x_position, y_position);
 
         // reset variables to prepare for next loop
         WaitForVSync();
@@ -618,7 +629,7 @@ void PlotSpriteAtColRow (const uint_8 row, const uint_8 col) {
 
         uint_32 x = col * COL_WIDTH;
         uint_32 y = row * ROW_HEIGHT;
-		fbp->pixels[y][x] = BLACK;
+		fbp->pixels[x][y] = BLACK;
 }
 
 
@@ -632,7 +643,7 @@ int main() {
     }
     */
 
-  solid_color(fbp, 0xFFFF); // make all pixels white
+  solid_color(fbp, 0x0000); // make all pixels white
   instantiate_cars();
   //sprite_scroll(fbp);
   while (1){
