@@ -8,9 +8,6 @@
 #include "hardware_constants.h"
 #include "device_structs.h"
 
-// audio file includes
-#include "../assets/zigzagoon.h"
-
 void PlayAudio (int file_num);
 
 #endif
