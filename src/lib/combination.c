@@ -603,7 +603,24 @@ static void GameLoop (void) {
 			sprite_draw(fbp, lanes, x, y, 4);
 		}
 		
-        GetUserControl(&x_delta, &y_delta);
+		for (x = 0; x < 500; x += 1){
+			for (int i = 0; i < 16; i += 1){
+				
+				
+				
+				if (cars[i].car_type == 0){
+					sprite_draw(fbp, ttc, cars[i].xleft + x, cars[i].yup, 3);
+				} else if (cars[i].car_type == 1){
+					sprite_draw(fbp, uber, cars[i].xleft + x, cars[i].yup, 2);
+				} else if (cars[i].car_type == 2){
+					sprite_draw(fbp, go, 320-(cars[i].xleft + x), cars[i].yup, 3);
+				} else if (cars[i].car_type == 3){
+					sprite_draw(fbp, zum, 320-(cars[i].xleft + x), cars[i].yup, 3);
+				} else if (cars[i].car_type == 4){
+					sprite_draw(fbp, car, 320-(cars[i].xleft + x), cars[i].yup, 2);
+				}
+			}
+			GetUserControl(&x_delta, &y_delta);
 
         if (x_delta == 0 && y_delta == 0) continue;
         //iteLEDSingle(8);
@@ -629,6 +646,9 @@ static void GameLoop (void) {
 			x_position = 0;
 			sprite_draw(fbp, raccoon, x_position*COL_WIDTH, y_position*ROW_HEIGHT, 1);
 		}
+		}
+		
+        
 		
 		// if raccoon has reached the top
 		if (y_position*ROW_HEIGHT < 15){
