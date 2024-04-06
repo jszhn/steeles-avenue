@@ -467,7 +467,14 @@ void instantiate_cars(){
 		for (int i = 0; i < 16; i++){
 			cars[i].car_type = rand() % 5;
 			cars[i].yup = i*15 + 15;
+			cars[i].ydown = i*15 + 30;
 			cars[i].xleft = rand() % 320;
+			if(cars[i].car_type == 0 || cars[i].car_type == 2 || cars[i].car_type == 3){
+				cars[i].xright = cars[i].xright + 60;
+			}
+			if(cars[i].car_type == 1 || cars[i].car_type == 4){
+				cars[i].xright = cars[i].xright + 40;
+			}
 		}
 }
 
@@ -520,6 +527,7 @@ void sprite_scroll(struct fb_t *const fbp;) {
 	while (1){
 		for (x = 0; x < 500; x += 1){
 			for (int i = 0; i < 16; i += 1){
+				
 				if (cars[i].car_type == 0){
 					sprite_draw(fbp, ttc, cars[i].xleft + x, cars[i].yup, 3);
 				} else if (cars[i].car_type == 1){
@@ -531,6 +539,29 @@ void sprite_scroll(struct fb_t *const fbp;) {
 				} else if (cars[i].car_type == 4){
 					sprite_draw(fbp, car, 320-(cars[i].xleft + x), cars[i].yup, 2);
 				}
+				// boundary checks COMMENTED OUT UNTIL IMPLEMENTED
+				/*
+				if (cars[i].car_type == 1 || cars[i].car_type == 4){
+					if(car[i].yup == y_position*ROW_HEIGHT){
+						if(cars[i].xleft + x < (x_position*COL_WIDTH + 20){
+							x_position = 8;
+							y_position = 14;
+							sprite_draw(fbp, raccoon, x_position*COL_WIDTH, y_position*ROW_HEIGHT, 1);
+							// score = 0;
+						}
+					}
+				}
+				if (cars[i].car_type == 0 || cars[i].car_type == 2 || cars[i].car_type == 3){
+					if(car[i].yup == y_position*ROW_HEIGHT){
+						if(cars[i].xright + x > x_position*COL_WIDTH){
+							x_position = 8;
+							y_position = 14;
+							sprite_draw(fbp, raccoon, x_position*COL_WIDTH, y_position*ROW_HEIGHT, 1);
+							// score = 0;
+						}
+					}
+				}
+				*/
 				
 			}
 		}
@@ -557,7 +588,7 @@ static void GameLoop (void) {
     uint_8 game_over = 0;
     //SetupGame();   
 
-    int x_position = 7, y_position = 7;
+    int x_position = 8, y_position = 14;
     int x_delta = 0, y_delta = 0;
     uint_8 players;
 	
@@ -590,6 +621,22 @@ static void GameLoop (void) {
         // reset variables to prepare for next loop
         WaitForVSync();
         x_delta = 0; y_delta = 0;
+		
+		if (x_position*ROW_HEIGHT < 15){
+			x_position = 15;
+			sprite_draw(fbp, raccoon, x_position*COL_WIDTH, y_position*ROW_HEIGHT, 1);
+		} else if (x_position*ROW_HEIGHT > 215){
+			x_position = 0;
+			sprite_draw(fbp, raccoon, x_position*COL_WIDTH, y_position*ROW_HEIGHT, 1);
+		}
+		
+		// if raccoon has reached the top
+		if (y_position*ROW_HEIGHT < 15){
+				//solid_color(fbp, 0x0000);
+			x_position = 8;
+			y_position = 14;
+			sprite_draw(fbp, raccoon, x_position*COL_WIDTH, y_position*ROW_HEIGHT, 1);
+		}
     }
 }
 
