@@ -293,6 +293,22 @@ bb, bb, bb, bb, bb, lg, lg, bb, bb, bb, bb, bb, bb, lg, lg, bb, bb, bb, bb, bb,
 bb, bb, bb, bb, bb, bb, bb, bb, bb, bb, bb, bb, bb, bb, bb, bb, bb, bb, bb, bb,
 };
 
+unsigned short black_box[] = {
+bb, bb, bb, bb, bb, bb, bb, bb, bb, bb, bb, bb, bb, bb, bb, bb, bb, bb, bb, bb,
+bb, bb, bb, bb, bb, bb, bb, bb, bb, bb, bb, bb, bb, bb, bb, bb, bb, bb, bb, bb,
+bb, bb, bb, bb, bb, bb, bb, bb, bb, bb, bb, bb, bb, bb, bb, bb, bb, bb, bb, bb,
+bb, bb, bb, bb, bb, bb, bb, bb, bb, bb, bb, bb, bb, bb, bb, bb, bb, bb, bb, bb,
+bb, bb, bb, bb, bb, bb, bb, bb, bb, bb, bb, bb, bb, bb, bb, bb, bb, bb, bb, bb,
+bb, bb, bb, bb, bb, bb, bb, bb, bb, bb, bb, bb, bb, bb, bb, bb, bb, bb, bb, bb,
+bb, bb, bb, bb, bb, bb, bb, bb, bb, bb, bb, bb, bb, bb, bb, bb, bb, bb, bb, bb,
+bb, bb, bb, bb, bb, bb, bb, bb, bb, bb, bb, bb, bb, bb, bb, bb, bb, bb, bb, bb,
+bb, bb, bb, bb, bb, bb, bb, bb, bb, bb, bb, bb, bb, bb, bb, bb, bb, bb, bb, bb,
+bb, bb, bb, bb, bb, bb, bb, bb, bb, bb, bb, bb, bb, bb, bb, bb, bb, bb, bb, bb,
+bb, bb, bb, bb, bb, bb, bb, bb, bb, bb, bb, bb, bb, bb, bb, bb, bb, bb, bb, bb,
+bb, bb, bb, bb, bb, bb, bb, bb, bb, bb, bb, bb, bb, bb, bb, bb, bb, bb, bb, bb,
+bb, bb, bb, bb, bb, bb, bb, bb, bb, bb, bb, bb, bb, bb, bb, bb, bb, bb, bb, bb,
+};
+
 unsigned short uber[] = {
 bb, bb, bb, bb, bb, bb, bb, bb, bb, bb, bb, bb, bb, bb, bb, bb, bb, bb, bb, bb, bb, bb, bb, bb, bb, bb, bb, bb, bb, bb, bb, bb, bb, bb, bb, bb, bb, bb, bb, bb,
 bb, bb, bb, bb, bb, bb, bb, bb, bb, bb, bb, bb, bb, bb, bb, bb, bb, bb, bb, bb, bb, bb, bb, bb, bb, bb, bb, bb, bb, bb, bb, bb, bb, bb, bb, bb, bb, bb, db, bb,
@@ -514,7 +530,7 @@ void sprite_draw(struct fb_t *const fbp, unsigned short sprite[], int x, int y, 
 		}
 	}
 }
-
+/*
 void sprite_scroll(struct fb_t *const fbp;) {
 	int x, y;
 	for(int y = 13; y < 230; y+=15){
@@ -525,7 +541,7 @@ void sprite_scroll(struct fb_t *const fbp;) {
 	}
 	// array to store location, only need x for loop, update locations, etc etc etc
 	while (1){
-		for (x = 0; x < 500; x += 1){
+		for (x = 0; x < 320; x += 1){
 			for (int i = 0; i < 16; i += 1){
 				
 				if (cars[i].car_type == 0){
@@ -540,7 +556,7 @@ void sprite_scroll(struct fb_t *const fbp;) {
 					sprite_draw(fbp, car, 320-(cars[i].xleft + x), cars[i].yup, 2);
 				}
 				// boundary checks COMMENTED OUT UNTIL IMPLEMENTED
-				/*
+				
 				if (cars[i].car_type == 1 || cars[i].car_type == 4){
 					if(car[i].yup == y_position*ROW_HEIGHT){
 						if(cars[i].xleft + x < (x_position*COL_WIDTH + 20){
@@ -561,7 +577,7 @@ void sprite_scroll(struct fb_t *const fbp;) {
 						}
 					}
 				}
-				*/
+				
 				
 			}
 		}
@@ -576,6 +592,7 @@ void sprite_scroll(struct fb_t *const fbp;) {
 			}
 	}
 }
+*/
 
 void solid_color(struct fb_t *const fbp, unsigned short color) {
     int x, y;
@@ -587,6 +604,13 @@ void solid_color(struct fb_t *const fbp, unsigned short color) {
 static void GameLoop (void) {
     uint_8 game_over = 0;
     //SetupGame();   
+	int x, y;
+		for(int y = 13; y < 230; y+=15){
+			sprite_draw(fbp, lanes, x, y, 4);
+		}
+		for(int y = 14; y < 230; y+=15){
+			sprite_draw(fbp, lanes, x, y, 4);
+		}
 
     int x_position = 8, y_position = 14;
     int x_delta = 0, y_delta = 0;
@@ -603,10 +627,43 @@ static void GameLoop (void) {
 			sprite_draw(fbp, lanes, x, y, 4);
 		}
 		
-		for (x = 0; x < 500; x += 1){
+		for (x = 0; x < 520; x += 1){
+			
 			for (int i = 0; i < 16; i += 1){
-				
-				
+				if (y_position*ROW_HEIGHT < 15){
+					sprite_draw(fbp, black_box, x_position*COL_WIDTH, y_position*ROW_HEIGHT, 1);
+				//solid_color(fbp, 0x0000);
+			x_position = 8;
+			y_position = 14;
+			sprite_draw(fbp, raccoon, x_position*COL_WIDTH, y_position*ROW_HEIGHT, 1);
+		}		
+				/*
+				if (cars[i].car_type == 0 || cars[i].car_type == 2 || cars[i].car_type == 3){
+					if(cars[i].yup == y_position*ROW_HEIGHT){
+						if((cars[i].xleft + x) < (x_position*COL_WIDTH)){
+							x_position = 8;
+							y_position = 14;
+							sprite_draw(fbp, raccoon, x_position*COL_WIDTH, y_position*ROW_HEIGHT, 1);
+							// score = 0;
+						}
+					}
+				}
+				if (cars[i].car_type == 1 || cars[i].car_type == 4){
+					if(cars[i].yup == y_position*ROW_HEIGHT){
+						if((cars[i].xleft + x) < (x_position*COL_WIDTH)){
+							x_position = 8;
+							y_position = 14;
+							sprite_draw(fbp, raccoon, x_position*COL_WIDTH, y_position*ROW_HEIGHT, 1);
+							// score = 0;
+						}
+					}
+				}
+				*/
+				if (x_position*COL_WIDTH == (cars[i].xleft + x) && y_position*ROW_HEIGHT == cars[i].yup) {
+                x_position = 8;
+                y_position = 14;
+					sprite_draw(fbp, raccoon, x_position*COL_WIDTH, y_position*ROW_HEIGHT, 1);
+            }
 				
 				if (cars[i].car_type == 0){
 					sprite_draw(fbp, ttc, cars[i].xleft + x, cars[i].yup, 3);
@@ -624,7 +681,7 @@ static void GameLoop (void) {
 
         if (x_delta == 0 && y_delta == 0) continue;
         //iteLEDSingle(8);
-
+		sprite_draw(fbp, black_box, x_position*COL_WIDTH, y_position*ROW_HEIGHT, 1);
         // bounds control for sprite
         if (x_position + x_delta >= X_MAX) x_position = 0;
         else if (x_position + x_delta < 0) x_position = X_MAX - 1;
@@ -640,9 +697,11 @@ static void GameLoop (void) {
         x_delta = 0; y_delta = 0;
 		
 		if (x_position*ROW_HEIGHT < 15){
+			sprite_draw(fbp, black_box, x_position*COL_WIDTH, y_position*ROW_HEIGHT, 1);
 			x_position = 15;
 			sprite_draw(fbp, raccoon, x_position*COL_WIDTH, y_position*ROW_HEIGHT, 1);
 		} else if (x_position*ROW_HEIGHT > 215){
+			sprite_draw(fbp, black_box, x_position*COL_WIDTH, y_position*ROW_HEIGHT, 1);
 			x_position = 0;
 			sprite_draw(fbp, raccoon, x_position*COL_WIDTH, y_position*ROW_HEIGHT, 1);
 		}
@@ -651,12 +710,7 @@ static void GameLoop (void) {
         
 		
 		// if raccoon has reached the top
-		if (y_position*ROW_HEIGHT < 15){
-				//solid_color(fbp, 0x0000);
-			x_position = 8;
-			y_position = 14;
-			sprite_draw(fbp, raccoon, x_position*COL_WIDTH, y_position*ROW_HEIGHT, 1);
-		}
+		
     }
 }
 
