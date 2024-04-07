@@ -684,7 +684,7 @@ void sprite_scroll(struct fb_t *const fbp;) {
 	while (1){
 		for (x = 0; x < 320; x += 1){
 			for (int i = 0; i < 16; i += 1){
-				
+
 				if (cars[i].car_type == 0){
 					sprite_draw(fbp, ttc, cars[i].xleft + x, cars[i].yup, 3);
 				} else if (cars[i].car_type == 1){
@@ -697,7 +697,7 @@ void sprite_scroll(struct fb_t *const fbp;) {
 					sprite_draw(fbp, car, 320-(cars[i].xleft + x), cars[i].yup, 2);
 				}
 				// boundary checks COMMENTED OUT UNTIL IMPLEMENTED
-				
+
 				if (cars[i].car_type == 1 || cars[i].car_type == 4){
 					if(car[i].yup == y_position*ROW_HEIGHT){
 						if(cars[i].xleft + x < (x_position*COL_WIDTH + 20){
@@ -718,8 +718,8 @@ void sprite_scroll(struct fb_t *const fbp;) {
 						}
 					}
 				}
-				
-				
+
+
 			}
 		}
 		solid_color(fbp, 0x0000);
@@ -743,8 +743,9 @@ void solid_color(struct fb_t *const fbp, unsigned short color) {
 }
 
 static void GameLoop(void) {
-    uint_8 game_over = 0;
-    int x, y;
+    int x;
+
+    // draw lanes
     for (int y = 13; y < 230; y += 15) {
         sprite_draw(fbp, lanes, x, y, 4);
     }
@@ -752,13 +753,17 @@ static void GameLoop(void) {
         sprite_draw(fbp, lanes, x, y, 4);
     }
 
+    // define some initial game parameters
     int x_position = 8, y_position = 14;
     int x_delta = 0, y_delta = 0;
-    uint_8 iterations = 0, lives = 5;
+    uint_8 iterations = 0, lives = 5, game_over = 0;
     uint_32 score = 0;
 
-    while (game_over == 0) { // loop while game over is false
+    // primary game loop; continues until game_over is true
+    while (game_over == 0) {
         int x;
+
+        // draw lanes
         for (int y = 13; y < 230; y += 15) {
             sprite_draw(fbp, lanes, x, y, 4);
         }
@@ -766,17 +771,18 @@ static void GameLoop(void) {
             sprite_draw(fbp, lanes, x, y, 4);
         }
 
+        // draw bus/car sprites
         for (x = 0; x < 520; x += 1) {
             for (int i = 0; i < 16; i += 1) {
-                if (y_position * ROW_HEIGHT < 15) {
-                    sprite_draw(fbp, black_box, x_position * COL_WIDTH, y_position * ROW_HEIGHT, 1);
-                    //solid_color(fbp, 0x0000);
-                    x_position = COL_MAX / 2;
-                    y_position = ROW_MAX - 1;
-                    sprite_draw(fbp, raccoon, x_position * COL_WIDTH, y_position * ROW_HEIGHT, 1);
-                }
+//                if (y_position * ROW_HEIGHT < 15) {
+//                    sprite_draw(fbp, black_box, x_position * COL_WIDTH, y_position * ROW_HEIGHT, 1);
+//                    x_position = COL_MAX / 2;
+//                    y_position = ROW_MAX - 1;
+//                    sprite_draw(fbp, raccoon, x_position * COL_WIDTH, y_position * ROW_HEIGHT, 1);
+//                }
 
-                if (cars[i].car_type == 0 || cars[i].car_type == 2 || cars[i].car_type == 3) { // buses
+                // bus collisions
+                if (cars[i].car_type == 0 || cars[i].car_type == 2 || cars[i].car_type == 3) {
                     if (cars[i].yup == y_position * ROW_HEIGHT) {
                         *dLEDs = 0x2;
                         int xt = x_position * COL_WIDTH; // temporary variable for comparisons
@@ -787,25 +793,11 @@ static void GameLoop(void) {
                             lives--;
                             *dLEDs = 0x1;
                         }
-
-//                        if ((cars[i].xleft + x) == (x_position * COL_WIDTH)) {
-//                            x_position = COL_MAX / 2;
-//                            y_position = ROW_MAX - 1;
-//                            sprite_draw(fbp, raccoon, x_position * COL_WIDTH, y_position * ROW_HEIGHT, 1);
-//                            // score = 0;
-//                            lives--;
-//                        }
-//                        if ((cars[i].xleft + x + 60) == (x_position * COL_WIDTH)) {
-//                            x_position = COL_MAX / 2;
-//                            y_position = ROW_MAX - 1;
-//                            sprite_draw(fbp, raccoon, x_position * COL_WIDTH, y_position * ROW_HEIGHT, 1);
-//                            // score = 0;
-//                            lives--;
-//                        }
                     }
                 }
 
-                if (cars[i].car_type == 1 || cars[i].car_type == 4) { // cars
+                // car collisions
+                if (cars[i].car_type == 1 || cars[i].car_type == 4) {
                     if (cars[i].yup == y_position * ROW_HEIGHT) {
                         if ((cars[i].xleft + x) == (x_position * COL_WIDTH + 20)) {
                             x_position = COL_MAX / 2;
@@ -848,6 +840,7 @@ static void GameLoop(void) {
                 continue;
             }
 
+            sprite_draw(fbp, raccoon, x_position * COL_WIDTH, y_position * ROW_HEIGHT, 1);
             GetUserControl(&x_delta, &y_delta);
             if (x_delta == 0 && y_delta == 0) continue; // if no change in position, continue
             // clear previous position
@@ -855,10 +848,10 @@ static void GameLoop(void) {
 
             // player bound checking
             if ((x_position + x_delta) * COL_WIDTH >= X_MAX) x_position = 0;
-            else if ((x_position + x_delta) * COL_WIDTH < 0) x_position = X_MAX - 1;
+            else if ((x_position + x_delta) * COL_WIDTH < 0) x_position = X_MAX / COL_WIDTH - 1;
             if ((y_position + y_delta) * ROW_HEIGHT >= Y_MAX) y_position = 0;
             else if ((y_position + y_delta) * ROW_HEIGHT < 0) {
-                y_position = Y_MAX - 1;
+                y_position = Y_MAX / ROW_HEIGHT - 1;
                 iterations++;
             }
 
