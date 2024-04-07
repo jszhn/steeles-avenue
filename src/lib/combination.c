@@ -772,21 +772,16 @@ static void GameLoop(void) {
         }
 
         // draw bus/car sprites
-        for (x = 0; x < 520; x += 1) {
+        for (x = 0; x < 520 && game_over == 0; x += 1) {
             for (int i = 0; i < 16; i += 1) {
-//                if (y_position * ROW_HEIGHT < 15) {
-//                    sprite_draw(fbp, black_box, x_position * COL_WIDTH, y_position * ROW_HEIGHT, 1);
-//                    x_position = COL_MAX / 2;
-//                    y_position = ROW_MAX - 1;
-//                    sprite_draw(fbp, raccoon, x_position * COL_WIDTH, y_position * ROW_HEIGHT, 1);
-//                }
-
                 // bus collisions
+                int xt = x_position * COL_WIDTH; // temporary variables for comparisons
+                int xlt = cars[i].xleft + x > X_MAX ? 0 + x : cars[i].xleft + x;
+                int xrt = cars[i].xright + x > X_MAX ? 0 + x : cars[i].xright + x;
                 if (cars[i].car_type == 0 || cars[i].car_type == 2 || cars[i].car_type == 3) {
                     if (cars[i].yup == y_position * ROW_HEIGHT) {
                         *dLEDs = 0x2;
-                        int xt = x_position * COL_WIDTH; // temporary variable for comparisons
-                        if (xt >= cars[i].xleft + x && xt <= cars[i].xright + x) {
+                        if (xt >= xlt && xt <= xrt) {
                             x_position = COL_MAX / 2;
                             y_position = ROW_MAX - 1;
                             sprite_draw(fbp, raccoon, x_position * COL_WIDTH, y_position * ROW_HEIGHT, 1);
@@ -799,29 +794,16 @@ static void GameLoop(void) {
                 // car collisions
                 if (cars[i].car_type == 1 || cars[i].car_type == 4) {
                     if (cars[i].yup == y_position * ROW_HEIGHT) {
-                        if ((cars[i].xleft + x) == (x_position * COL_WIDTH + 20)) {
+                        *dLEDs = 0x4;
+                        if (xt <= cars[i].xright + x && xt >= cars[i].xleft + x) {
                             x_position = COL_MAX / 2;
                             y_position = ROW_MAX - 1;
                             sprite_draw(fbp, raccoon, x_position * COL_WIDTH, y_position * ROW_HEIGHT, 1);
-                            // score = 0;
-                            lives--;
-                        }
-                        if ((cars[i].xleft + x + 40) == (x_position * COL_WIDTH + 20)) {
-                            x_position = COL_MAX / 2;
-                            y_position = ROW_MAX - 1;
-                            sprite_draw(fbp, raccoon, x_position * COL_WIDTH, y_position * ROW_HEIGHT, 1);
-                            // score = 0;
                             lives--;
                         }
                     }
                 }
-                /*
-                if (x_position*COL_WIDTH == (cars[i].xleft + x) && y_position*ROW_HEIGHT == cars[i].yup) {
-                x_position = 8;
-                y_position = 14;
-                    sprite_draw(fbp, raccoon, x_position*COL_WIDTH, y_position*ROW_HEIGHT, 1);
-            }
-            */
+
                 if (cars[i].car_type == 0) {
                     sprite_draw(fbp, ttc, cars[i].xleft + x, cars[i].yup, 3);
                 } else if (cars[i].car_type == 1) {
