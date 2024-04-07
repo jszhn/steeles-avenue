@@ -205,7 +205,11 @@ struct Obstacle {
 };
 
 struct timer_t *const timer = (struct timer_t *) 0xFF202000;
-
+TIMER_t *const dTimer = (TIMER_t*) TIMER_BASE;
+TIMER_t *const dTimer2 = (TIMER_t*) TIMER_2_BASE;
+vuint_32 *const dLEDs = (vuint_32*) LEDR_BASE;
+vuint_32 *const dHEX30 = (vuint_32*) HEX3_HEX0_BASE;
+vuint_32 *const dHEX74 = (vuint_32*) HEX5_HEX4_BASE;
 /*
  * Image arrays
  */
@@ -496,16 +500,12 @@ void solid_color(struct fb_t *const fbp, unsigned short color);
 void PlotSpriteAtColRow(const uint_8 row, const uint_8 col);
 
 /*
-
-                        PS2 STUFF
-
-
+* PS/2 functions + utilities
 */
 
 PS2_t *const dPS2 = (PS2_t *) PS2_BASE;
 
 void GetUserControl(int *x_movement, int *y_movement) {
-//    while (PS2Empty() == 0) {
     char in = PS2Read();
     switch (in) {
         case 'W':
@@ -524,7 +524,6 @@ void GetUserControl(int *x_movement, int *y_movement) {
             *x_movement = *x_movement;
             *y_movement = *y_movement;
     }
-//    }
 }
 
 void PS2PollforChar(char cmp) {
@@ -561,16 +560,6 @@ char PS2Read(void) {
             return 'S';
         case (D_PS2):
             return 'D';
-        case (I_PS2):
-            return 'I';
-        case (J_PS2):
-            return 'J';
-        case (K_PS2):
-            return 'K';
-        case (L_PS2):
-            return 'L';
-        case (ESC_PS2):
-            return '~';
         case (ENTER_PS2):
             return '\n';
         default:
@@ -579,7 +568,7 @@ char PS2Read(void) {
 
 }
 
-uint_8 PS2Empty(void) { // true if empty, false if there's elements
+inline uint_8 PS2Empty(void) { // true if empty, false if there's elements
     return (dPS2->RVALID & 0b10000000) == 0;
 }
 
@@ -589,12 +578,35 @@ void PS2ClearFIFO(void) {
         input_byte = dPS2->DATA; // flushes queue
 }
 
-/*
+AUDIO_t *const dAudio = (AUDIO_t*) AUDIO_BASE;
 
-                        END OF PS2 STUFF
-
-
-*/
+//void PlayAudio (const int track_num) {
+//    const int* track;
+//    uint_32 track_len;
+//    switch (track_num) { // sets local variables of interest
+//        case (1):
+//            track = zigzagoon;
+//            track_len = zigzagoon_size;
+//            break;
+//        case (2):
+//            track = trombone;
+//            track_len = trombone_size;
+//            break;
+//        case (3):
+//            track = next_sound;
+//            track_len = next_sound_size;
+//            break;
+//        default: return;
+//    }
+//
+//    for (int i = 0; i < track_len; i++) { // iterates through audio array
+//        while (dAudio->WSRC == 0 || dAudio->WSLC == 0); // ensures FIFO has space before continuing
+//        if (dAudio->WSRC > 0 && dAudio->WSLC > 0) { // if audio FIFO has space
+//            dAudio->LDATA = track[i];
+//            dAudio->RDATA = track[i];
+//        }
+//    }
+//}
 
 void waitasec(int pow_fraction) {
     unsigned int t = TIMERSEC >> pow_fraction;
@@ -610,14 +622,14 @@ void waitasec(int pow_fraction) {
 void instantiate_cars() {
     for (int i = 0; i < 16; i++) {
         cars[i].car_type = rand() % 5;
-        cars[i].yup = i * 15 + 15;
-        cars[i].ydown = i * 15 + 30;
+        cars[i].yup = i * ROW_HEIGHT + 15;
+        cars[i].ydown = i * ROW_HEIGHT + 30;
         cars[i].xleft = rand() % 320;
         if (cars[i].car_type == 0 || cars[i].car_type == 2 || cars[i].car_type == 3) {
-            cars[i].xright = cars[i].xright + 60;
+            cars[i].xright = cars[i].xleft + 60;
         }
         if (cars[i].car_type == 1 || cars[i].car_type == 4) {
-            cars[i].xright = cars[i].xright + 40;
+            cars[i].xright = cars[i].xleft + 40;
         }
     }
 }
@@ -732,7 +744,6 @@ void solid_color(struct fb_t *const fbp, unsigned short color) {
 
 static void GameLoop(void) {
     uint_8 game_over = 0;
-    //SetupGame();   
     int x, y;
     for (int y = 13; y < 230; y += 15) {
         sprite_draw(fbp, lanes, x, y, 4);
@@ -743,13 +754,11 @@ static void GameLoop(void) {
 
     int x_position = 8, y_position = 14;
     int x_delta = 0, y_delta = 0;
-    uint_8 iterations = 0;
+    uint_8 iterations = 0, lives = 5;
     uint_32 score = 0;
 
     while (game_over == 0) { // loop while game over is false
-        // all of these updates the position of the player
-
-        int x, y;
+        int x;
         for (int y = 13; y < 230; y += 15) {
             sprite_draw(fbp, lanes, x, y, 4);
         }
@@ -758,51 +767,62 @@ static void GameLoop(void) {
         }
 
         for (x = 0; x < 520; x += 1) {
-
             for (int i = 0; i < 16; i += 1) {
                 if (y_position * ROW_HEIGHT < 15) {
                     sprite_draw(fbp, black_box, x_position * COL_WIDTH, y_position * ROW_HEIGHT, 1);
                     //solid_color(fbp, 0x0000);
-                    x_position = 8;
-                    y_position = 14;
+                    x_position = COL_MAX / 2;
+                    y_position = ROW_MAX - 1;
                     sprite_draw(fbp, raccoon, x_position * COL_WIDTH, y_position * ROW_HEIGHT, 1);
                 }
 
-                if (cars[i].car_type == 0 || cars[i].car_type == 2 || cars[i].car_type == 3) {
+                if (cars[i].car_type == 0 || cars[i].car_type == 2 || cars[i].car_type == 3) { // buses
                     if (cars[i].yup == y_position * ROW_HEIGHT) {
-                        if ((cars[i].xleft + x) == (x_position * COL_WIDTH)) {
-                            x_position = 8;
-                            y_position = 14;
+                        *dLEDs = 0x2;
+                        int xt = x_position * COL_WIDTH; // temporary variable for comparisons
+                        if (xt >= cars[i].xleft + x && xt <= cars[i].xright + x) {
+                            x_position = COL_MAX / 2;
+                            y_position = ROW_MAX - 1;
                             sprite_draw(fbp, raccoon, x_position * COL_WIDTH, y_position * ROW_HEIGHT, 1);
-                            // score = 0;
+                            lives--;
+                            *dLEDs = 0x1;
                         }
-                        if ((cars[i].xleft + x + 60) == (x_position * COL_WIDTH)) {
-                            x_position = 8;
-                            y_position = 14;
-                            sprite_draw(fbp, raccoon, x_position * COL_WIDTH, y_position * ROW_HEIGHT, 1);
-                            // score = 0;
-                        }
+
+//                        if ((cars[i].xleft + x) == (x_position * COL_WIDTH)) {
+//                            x_position = COL_MAX / 2;
+//                            y_position = ROW_MAX - 1;
+//                            sprite_draw(fbp, raccoon, x_position * COL_WIDTH, y_position * ROW_HEIGHT, 1);
+//                            // score = 0;
+//                            lives--;
+//                        }
+//                        if ((cars[i].xleft + x + 60) == (x_position * COL_WIDTH)) {
+//                            x_position = COL_MAX / 2;
+//                            y_position = ROW_MAX - 1;
+//                            sprite_draw(fbp, raccoon, x_position * COL_WIDTH, y_position * ROW_HEIGHT, 1);
+//                            // score = 0;
+//                            lives--;
+//                        }
                     }
                 }
 
-                if (cars[i].car_type == 1 || cars[i].car_type == 4) {
+                if (cars[i].car_type == 1 || cars[i].car_type == 4) { // cars
                     if (cars[i].yup == y_position * ROW_HEIGHT) {
                         if ((cars[i].xleft + x) == (x_position * COL_WIDTH + 20)) {
-                            x_position = 8;
-                            y_position = 14;
+                            x_position = COL_MAX / 2;
+                            y_position = ROW_MAX - 1;
                             sprite_draw(fbp, raccoon, x_position * COL_WIDTH, y_position * ROW_HEIGHT, 1);
                             // score = 0;
+                            lives--;
                         }
                         if ((cars[i].xleft + x + 40) == (x_position * COL_WIDTH + 20)) {
-                            x_position = 8;
-                            y_position = 14;
+                            x_position = COL_MAX / 2;
+                            y_position = ROW_MAX - 1;
                             sprite_draw(fbp, raccoon, x_position * COL_WIDTH, y_position * ROW_HEIGHT, 1);
                             // score = 0;
+                            lives--;
                         }
                     }
                 }
-
-
                 /*
                 if (x_position*COL_WIDTH == (cars[i].xleft + x) && y_position*ROW_HEIGHT == cars[i].yup) {
                 x_position = 8;
@@ -810,7 +830,6 @@ static void GameLoop(void) {
                     sprite_draw(fbp, raccoon, x_position*COL_WIDTH, y_position*ROW_HEIGHT, 1);
             }
             */
-
                 if (cars[i].car_type == 0) {
                     sprite_draw(fbp, ttc, cars[i].xleft + x, cars[i].yup, 3);
                 } else if (cars[i].car_type == 1) {
@@ -823,17 +842,25 @@ static void GameLoop(void) {
                     sprite_draw(fbp, car, 320 - (cars[i].xleft + x), cars[i].yup, 2);
                 }
             }
-            GetUserControl(&x_delta, &y_delta);
-            if (x_delta == 0 && y_delta == 0) continue;
 
+            if (lives == 0) { // ends game when no lives left
+                game_over = 1;
+                continue;
+            }
+
+            GetUserControl(&x_delta, &y_delta);
+            if (x_delta == 0 && y_delta == 0) continue; // if no change in position, continue
             // clear previous position
             sprite_draw(fbp, black_box, x_position * COL_WIDTH, y_position * ROW_HEIGHT, 1);
 
-            // bounds checking
+            // player bound checking
             if ((x_position + x_delta) * COL_WIDTH >= X_MAX) x_position = 0;
             else if ((x_position + x_delta) * COL_WIDTH < 0) x_position = X_MAX - 1;
             if ((y_position + y_delta) * ROW_HEIGHT >= Y_MAX) y_position = 0;
-            else if ((y_position + y_delta) * ROW_HEIGHT < 0) y_position = Y_MAX - 1;
+            else if ((y_position + y_delta) * ROW_HEIGHT < 0) {
+                y_position = Y_MAX - 1;
+                iterations++;
+            }
 
             // update position
             x_position += x_delta;
@@ -845,27 +872,10 @@ static void GameLoop(void) {
             WaitForVSync();
             x_delta = 0;
             y_delta = 0;
-
-//            if (x_position * ROW_HEIGHT < 15) {
-//                sprite_draw(fbp, black_box, x_position * COL_WIDTH, y_position * ROW_HEIGHT, 1);
-//                x_position = 15;
-//                sprite_draw(fbp, raccoon, x_position * COL_WIDTH, y_position * ROW_HEIGHT, 1);
-//            } else if (x_position * ROW_HEIGHT > 215) {
-//                sprite_draw(fbp, black_box, x_position * COL_WIDTH, y_position * ROW_HEIGHT, 1);
-//                x_position = 0;
-//                sprite_draw(fbp, raccoon, x_position * COL_WIDTH, y_position * ROW_HEIGHT, 1);
-//            }
+            *dLEDs = 0;
         }
-
-
-
         // if raccoon has reached the top
-
     }
-}
-
-static void SetupGame(void) {
-    PlotSpriteAtColRow(7, 7);
 }
 
 static void StartScreen(void) {
@@ -887,30 +897,12 @@ void WaitForVSync(void) {
     // exits when refresh done
 }
 
-void PlotSpriteAtColRow(const uint_8 row, const uint_8 col) {
-    // currently only plots a single pixel at a time
-    if (row >= ROW_MAX || col >= COL_MAX) // if invalid row/col
-        return;
-
-    uint_32 x = col * COL_WIDTH;
-    uint_32 y = row * ROW_HEIGHT;
-    fbp->pixels[x][y] = BLACK;
-}
-
-
 int main() {
-    /*SetupBoard();
-
-    while (1) { // main outer loop
-        StartScreen();
-        GameLoop(); // loops game
-        EndScreen();
-    }
-    */
-
-    solid_color(fbp, 0x0000); // make all pixels white
+    // set-up functions upon system start
+    PS2ClearFIFO();
+    solid_color(fbp,0x0000); // make all pixels white
     instantiate_cars();
-    //sprite_scroll(fbp);
+
     while (1) {
         GameLoop();
     }
