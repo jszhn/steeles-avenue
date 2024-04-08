@@ -6086,14 +6086,10 @@ static void GameLoop(void) {
 		
         for (x = 0; x < 320; x += 1) {
             // PollTimer(SecondsToTicks(1/60));
-            for (int p = 0; p < 1000000; p++);
+            //for (int p = 0; p < 1000000; p++);
 			for (int i = 0; i < 13; i += 1){
 				int xt = x_position * COL_WIDTH; // temporary variables for comparisons
-				
-                
-				
-				if (cars[i].car_type == 0 || cars[i].car_type == 1){
-					if ((cars[i].xleft + x) < 320){
+				if ((cars[i].xleft + x) < 320){
 					if (cars[i].yup == y_position * ROW_HEIGHT) {
 						if ((cars[i].xleft + x) == xt){ 
                             x_position = COL_MAX / 2 + 1;
@@ -6114,6 +6110,10 @@ static void GameLoop(void) {
                     }
 					}
 					}
+                
+				
+				if (cars[i].car_type == 0 || cars[i].car_type == 1){
+					
 					if ((cars[i].xleft + x) < 320){
 					if (cars[i].yup == y_position * ROW_HEIGHT) {
 						if ((cars[i].xleft + x + 20) == xt){ 
@@ -6249,7 +6249,7 @@ static void GameLoop(void) {
 				if (cars[i].car_type == 2 || cars[i].car_type == 3){
 					if ((320 - cars[i].xleft + x) < 320){
 					if (cars[i].yup == y_position * ROW_HEIGHT) {
-						if ((cars[i].xleft + x + 80) == xt){ 
+						if ((cars[i].xleft + x + 80) < xt && xt < (cars[i].xleft + x) ){ 
                             x_position = COL_MAX / 2 + 1;
                             y_position = ROW_MAX - 1;
                             solid_color(fbp, 0x0000);
@@ -6259,7 +6259,7 @@ static void GameLoop(void) {
                     }
 				} else {
 					if (cars[i].yup == y_position * ROW_HEIGHT) {
-						if ((x - cars[i].diff + 80) == xt){ 
+						if ((x - cars[i].diff + 80) < xt && xt < (x - cars[i].diff)){ 
                             x_position = COL_MAX / 2 + 1;
                             y_position = ROW_MAX - 1;
                             solid_color(fbp, 0x0000);
@@ -6269,6 +6269,7 @@ static void GameLoop(void) {
 					}
 					}
 				}
+				
 
                 for (int y = 28; y < 200; y += 15) {
                     sprite_draw(fbp, lanes, 0, y, 4);
