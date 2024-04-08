@@ -6,7 +6,6 @@
 #define PS2_H
 
 #include "device_structs.h"
-#include "other_devices.h"
 
 /*
  * Preprocessor definitions

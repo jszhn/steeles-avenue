@@ -1,2 +1,4 @@
 # Steeles Avenue
-Crossy Road/Frogger for Terasic's DE-1 SoC platform.
+Frogger-inspired game, built for Terasic's DE1-SoC platform targeting a Nios II instruction architecture.
+
+## Installation

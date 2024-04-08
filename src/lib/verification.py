@@ -1,3 +1,4 @@
+# A file to verify C function correctness
 def val2bin(write: int) -> int:
     bin = 1
     for i in range(write):
