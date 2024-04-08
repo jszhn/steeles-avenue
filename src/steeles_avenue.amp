@@ -11,16 +11,9 @@
     <program>
         <type>C Program</type>
         <source_files>
-            <source_file filepath="true">main.c</source_file>
             <source_file filepath="true">lib/address_map_nios2.h</source_file>
             <source_file filepath="true">lib/device_structs.h</source_file>
-            <source_file filepath="true">lib/graphics.c</source_file>
-            <source_file filepath="true">lib/graphics.h</source_file>
-            <source_file filepath="true">lib/hardware_constants.h</source_file>
-            <source_file filepath="true">lib/other_devices.c</source_file>
-            <source_file filepath="true">lib/other_devices.h</source_file>
-            <source_file filepath="true">lib/ps2.c</source_file>
-            <source_file filepath="true">lib/ps2.h</source_file>
+            <source_file filepath="true">lib/combination.c</source_file>
         </source_files>
         <options>
             <compiler_flags>-g -O1 -ffunction-sections -fverbose-asm -fno-inline -mno-cache-volatile</compiler_flags>
