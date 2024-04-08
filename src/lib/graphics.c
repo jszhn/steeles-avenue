@@ -74,7 +74,6 @@ void DrawCanvas (const int canvas_number) {
 
 int main (void) {
     // gcc -save-temps -CC -S src/lib/graphics.c
-    ClearScreen();
     DrawCanvas(1);
     WaitForVSync();
     for (;;);
