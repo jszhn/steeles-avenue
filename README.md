@@ -3,6 +3,10 @@ Frogger-inspired game, built for Terasic's DE1-SoC platform targeting a Nios II 
 
 The game makes use of VGA for display and a PS/2 keyboard input.
 
+Created by: Yanni Alevras and Jason Zhang
+
+![](src/assets/start_screen.png)
+
 ## Installation
 *Steeles Avenue* is intended for use with the Terasic DE1-SoC for a Nios II soft-core processor. Any other development platforms or architectures are untested and may not function as intended.
 
