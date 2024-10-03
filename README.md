@@ -19,5 +19,5 @@ In the Quartus Monitor Program, open the `steeles_avenue.amp` project file. Ensu
 On [CPUlator](https://cpulator.01xz.net/?sys=nios-de1soc), enable a DE1-SoC Nios II system. In the editor, change the language to C, and import the `src/combination.c` file. Press `Compile and Load (F5)`, then `Continue (F3)` to start the game. Display will be on the VGA pixel buffer. PS/2 input is done at device `ff200100`.
 
 It's possible to rebuild `src/combination.c` from source. This requires a local installation of GCC and CMake version >3.10.
-* In `src/main.c`, uncomment the macro definition for `#define CPULATOR`.
+* In `src/main.c`, uncomment the macro definition for `#define CPULATOR`. This allows the source files to be included by the pre-processor.
 * Then, with CMake, compile the `preprocess` target.
