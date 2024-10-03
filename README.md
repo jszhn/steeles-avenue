@@ -20,4 +20,4 @@ On [CPUlator](https://cpulator.01xz.net/?sys=nios-de1soc), enable a DE1-SoC Nios
 
 It's possible to rebuild `src/combination.c` from source. This requires a local installation of GCC and CMake version >3.10.
 * In `src/main.c`, uncomment the macro definition for `#define CPULATOR`. This allows the source files to be included by the pre-processor.
-* Then, with CMake, compile the `preprocess` target.
+* Then, with CMake, compile the `preprocess` target. The output file will be at `cmake-build-debug/preprocess_output.i`.
