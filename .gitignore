@@ -12,7 +12,6 @@
 
 # Build files
 cmake-build-debug/
-CMakeLists.txt
 main.i
 main.s
 

@@ -496,3 +496,15 @@ int main() {
         EndScreen();
     }
 }
+
+// #define CPULATOR
+#ifdef CPULATOR
+
+#include "lib/address_map_nios2.h"
+#include "lib/device_structs.h"
+#include "lib/ps2.c"
+#include "lib/audio.c"
+#include "lib/hardware_constants.c"
+#include "lib/other_devices.c"
+
+#endif
