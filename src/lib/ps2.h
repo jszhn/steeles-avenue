@@ -28,21 +28,17 @@
  * Function definitions
  */
 
-void GetUserControl (int* x_movement, int* y_movement);
-
+// Gets user control from PS/2 keyboard.
+void GetUserControl(int *x_movement, int *y_movement);
 // Continuously polls PS/2 for a specific comparison character.
-void PS2PollforChar (char cmp);
-
+void PS2PollforChar(char cmp);
 // Returns most recently output character. Should be polled continuously.
-char PS2Read (void);
-
+char PS2Read(void);
 // For internal use within PS2Read(). Returns a special character.
-static char PS2ReadSpecialCharacter (uint_8 *second_b, uint_8 *third_b);
-
+static char PS2ReadSpecialCharacter(uint_8 *second_b, uint_8 *third_b);
 // Returns non-zero if PS/2 output FIFO is empty. Returns zero if it is.
-uint_8 PS2Empty (void);
-
+uint_8 PS2Empty(void);
 // Clears PS/2 output FIFO.
-void PS2ClearFIFO (void);
+void PS2ClearFIFO(void);
 
 #endif

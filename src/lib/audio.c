@@ -36,13 +36,3 @@ void PlayAudio (const int track_num) {
         }
     }
 }
-
-/*
-int main (void) {
-    SetTimer(SecondsToTicks(5));
-    while (!(dTimer->STATUS & 0x1));
-
-    PlayAudio(2);
-    for (;;);
-}
-*/

@@ -61,4 +61,17 @@ typedef struct PS2_t {
     vuint_32 CTRL;
 } PS2_t;
 
+struct timer_t {
+    volatile unsigned int status;
+    volatile unsigned int control;
+    volatile unsigned int periodlo;
+    volatile unsigned int periodhi;
+    volatile unsigned int snaplo;
+    volatile unsigned int snaphi;
+};
+
+struct fb_t {
+    unsigned short volatile pixels[256][512];
+};
+
 #endif
