@@ -4,9 +4,6 @@
 #include "../assets/trombone.c"
 #include "../assets/next_sound.c"
 
-#include "other_devices.h"
-#include "other_devices.c"
-
 AUDIO_t *const dAudio = (AUDIO_t*) AUDIO_BASE;
 
 void PlayAudio (const int track_num) {

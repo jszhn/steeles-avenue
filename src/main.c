@@ -10,46 +10,12 @@
 #include "lib/device_structs.h"
 #include "lib/ps2.h"
 #include "lib/audio.h"
+#include "lib/hardware_constants.h"
 
 // game assets
-#include "assets/zigzagoon.c"
-#include "assets/trombone.c"
-#include "assets/next_sound.c"
 #include "assets/start_screen.c"
 #include "assets/end_screen.c"
 #include "assets/vehicles.c"
-
-/*
- * Hardware constant definitions
- */
-#define X_MAX 320
-#define Y_MAX 240
-#define TIMER_MAX 100000000
-#define TIMER_SEC 100000000
-
-#define ONES 0b11111111111111111111111111111111
-
-// game specific numbers
-#define COL_MAX 16
-#define COL_WIDTH 20
-#define ROW_MAX 16
-#define ROW_HEIGHT 15
-
-/*
- * PS2 constant definitions
- */
-#define NOCHAR_PS2 0x20 // used for invalid PS2 input or non-mapped characters
-#define BREAK_PS2 0xF0
-#define ESC_PS2 0x76
-#define ENTER_PS2 0x5A
-#define W_PS2 0x1D
-#define A_PS2 0x1C
-#define S_PS2 0x1B
-#define D_PS2 0x23
-#define I_PS2 0x43
-#define J_PS2 0x3B
-#define K_PS2 0x42
-#define L_PS2 0x4B
 
 struct Obstacle {
     int car_type;
@@ -71,7 +37,6 @@ vuint_32 *const dLEDs = (vuint_32*) LEDR_BASE;
 vuint_32 *const dHEX30 = (vuint_32*) HEX3_HEX0_BASE;
 vuint_32 *const dHEX74 = (vuint_32*) HEX5_HEX4_BASE;
 PIXEL_t *const dPixelBuffer = (PIXEL_t *) PIXEL_BUF_CTRL_BASE;
-AUDIO_t *const dAudio = (AUDIO_t*) AUDIO_BASE;
 
 int xn = 320;
 int xl = 0;
