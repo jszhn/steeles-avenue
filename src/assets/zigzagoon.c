@@ -1,7 +1,3 @@
-//
-// Created by wikid on 01/04/2024.
-//
-
 #ifndef ZIGZAGOON_H
 #define ZIGZAGOON_H
 
