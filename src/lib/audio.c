@@ -4,10 +4,10 @@
 #include "../assets/trombone.c"
 #include "../assets/next_sound.c"
 
-AUDIO_t *const dAudio = (AUDIO_t*) AUDIO_BASE;
+AUDIO_t *const dAudio = (AUDIO_t *) AUDIO_BASE;
 
-void PlayAudio (const int track_num) {
-    const int* track;
+void PlayAudio(const int track_num) {
+    const int *track;
     uint_32 track_len;
     switch (track_num) { // sets local variables of interest
         case (1):
@@ -22,7 +22,8 @@ void PlayAudio (const int track_num) {
             track = next_sound;
             track_len = next_sound_size;
             break;
-        default: return;
+        default:
+            return;
     }
 
     for (int i = 0; i < track_len; i++) { // iterates through audio array

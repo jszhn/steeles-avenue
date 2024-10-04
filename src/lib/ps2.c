@@ -1,6 +1,6 @@
 #include "ps2.h"
 
-PS2_t *const dPS2 = (PS2_t*) PS2_BASE;
+PS2_t *const dPS2 = (PS2_t *) PS2_BASE;
 
 /*
 * PS/2 functions + utilities
@@ -68,7 +68,9 @@ char PS2Read(void) {
 
 }
 
-inline uint_8 PS2Empty(void) { // true if empty, false if there's elements
+inline uint_8
+
+PS2Empty(void) { // true if empty, false if there's elements
     return (dPS2->RVALID & 0b10000000) == 0;
 }
 

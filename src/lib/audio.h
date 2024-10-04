@@ -8,6 +8,6 @@
 #include "hardware_constants.h"
 #include "device_structs.h"
 
-void PlayAudio (int file_num);
+void PlayAudio(int file_num);
 
 #endif

@@ -24,7 +24,7 @@ struct Obstacle {
     int xright;
     int yup;
     int ydown;
-	int diff;
+    int diff;
 };
 
 /*
@@ -44,15 +44,23 @@ struct Obstacle cars[13];
  */
 
 static void GameLoop(void);
+
 static void StartScreen(void);
+
 static void EndScreen(void);
 
 void WaitForVSync(void);
+
 void waitasec(int pow_fraction);
+
 void instantiate_cars();
+
 void sprite_draw(struct fb_t *const fbp, unsigned short sprite[], int x, int y, int size);
+
 void sprite_draw_2d(struct fb_t *const fbp, int cavna, int x, int y, int size);
+
 void sprite_scroll(struct fb_t *const fbp);
+
 void solid_color(struct fb_t *const fbp, unsigned short color);
 
 void waitasec(int pow_fraction) {
@@ -68,6 +76,7 @@ void waitasec(int pow_fraction) {
 
 
 int num_buses;
+
 void instantiate_cars() {
     num_buses = 0;
     for (int i = 0; i < 13; i++) {
@@ -82,18 +91,18 @@ void instantiate_cars() {
         if (cars[i].car_type == 1 || cars[i].car_type == 4) {
             cars[i].xright = cars[i].xleft + 40;
         }
-		cars[i].diff = (320-cars[i].xleft);
+        cars[i].diff = (320 - cars[i].xleft);
     }
 }
 
 void sprite_draw_2d(struct fb_t *const fbp, int canvas_number, int x, int y, int size) {
-    unsigned short* sprite; // local var
+    unsigned short *sprite; // local var
     if (canvas_number == 1) sprite = start_screen;
     else sprite = end_screen;
 
     int sxi, syi;
     int xi, yi;
-	if (size == 5) {
+    if (size == 5) {
         for (sxi = 0; sxi < 320; sxi++)
             for (syi = 0; syi < 240; syi++) {
                 xi = x + sxi;
@@ -106,7 +115,7 @@ void sprite_draw_2d(struct fb_t *const fbp, int canvas_number, int x, int y, int
 void sprite_draw(struct fb_t *const fbp, unsigned short sprite[], int x, int y, int size) {
     int sxi, syi;
     int xi, yi;
-	if (size == 5) {
+    if (size == 5) {
         for (sxi = 0; sxi < 320; sxi++)
             for (syi = 0; syi < 240; syi++) {
                 xi = x + sxi;
@@ -157,7 +166,7 @@ void solid_color(struct fb_t *const fbp, unsigned short color) {
 
 static void GameLoop(void) {
     int x;
-	
+
     // draw lanes
     for (int y = 28; y < 200; y += 15) {
         sprite_draw(fbp, lanes, x, y, 4);
@@ -165,7 +174,6 @@ static void GameLoop(void) {
     for (int y = 29; y < 200; y += 15) {
         sprite_draw(fbp, lanes, x, y, 4);
     }
-
 
     // define some initial game parameters
     int x_position = 8, y_position = 14;
@@ -178,193 +186,190 @@ static void GameLoop(void) {
     while (game_over == 0) {
         int x;
         // draw bus/car sprites
-		
+
         for (x = 0; x < 320; x += 1) {
-            // PollTimer(SecondsToTicks(1/60));
-            //for (int p = 0; p < 1000000; p++);
-			for (int i = 0; i < 13; i += 1){
-				int xt = x_position * COL_WIDTH; // temporary variables for comparisons
-				if ((cars[i].xleft + x) < 320){
-					if (cars[i].yup == y_position * ROW_HEIGHT) {
-						if ((cars[i].xleft + x) == xt){ 
+            for (int i = 0; i < 13; i += 1) {
+                int xt = x_position * COL_WIDTH; // temporary variables for comparisons
+                if ((cars[i].xleft + x) < 320) {
+                    if (cars[i].yup == y_position * ROW_HEIGHT) {
+                        if ((cars[i].xleft + x) == xt) {
                             x_position = COL_MAX / 2 + 1;
                             y_position = ROW_MAX - 1;
                             solid_color(fbp, 0x0000);
                             sprite_draw(fbp, raccoon, x_position * COL_WIDTH, y_position * ROW_HEIGHT, 1);
                             lives--;
-						}
+                        }
                     }
-				} else {
-					if (cars[i].yup == y_position * ROW_HEIGHT) {
-						if ((x - cars[i].diff) == xt){ 
+                } else {
+                    if (cars[i].yup == y_position * ROW_HEIGHT) {
+                        if ((x - cars[i].diff) == xt) {
                             x_position = COL_MAX / 2 + 1;
                             y_position = ROW_MAX - 1;
                             solid_color(fbp, 0x0000);
                             sprite_draw(fbp, raccoon, x_position * COL_WIDTH, y_position * ROW_HEIGHT, 1);
                             lives--;
+                        }
                     }
-					}
-					}
-                
-				
-				if (cars[i].car_type == 0 || cars[i].car_type == 1){
-					
-					if ((cars[i].xleft + x) < 320){
-					if (cars[i].yup == y_position * ROW_HEIGHT) {
-						if ((cars[i].xleft + x + 20) == xt){ 
-                            x_position = COL_MAX / 2 + 1;
-                            y_position = ROW_MAX - 1;
-                            solid_color(fbp, 0x0000);
-                            sprite_draw(fbp, raccoon, x_position * COL_WIDTH, y_position * ROW_HEIGHT, 1);
-                            lives--;
-						}
+                }
+
+                if (cars[i].car_type == 0 || cars[i].car_type == 1) {
+                    if ((cars[i].xleft + x) < 320) {
+                        if (cars[i].yup == y_position * ROW_HEIGHT) {
+                            if ((cars[i].xleft + x + 20) == xt) {
+                                x_position = COL_MAX / 2 + 1;
+                                y_position = ROW_MAX - 1;
+                                solid_color(fbp, 0x0000);
+                                sprite_draw(fbp, raccoon, x_position * COL_WIDTH, y_position * ROW_HEIGHT, 1);
+                                lives--;
+                            }
+                        }
+                    } else {
+                        if (cars[i].yup == y_position * ROW_HEIGHT) {
+                            if ((x - cars[i].diff + 20) == xt) {
+                                x_position = COL_MAX / 2 + 1;
+                                y_position = ROW_MAX - 1;
+                                solid_color(fbp, 0x0000);
+                                sprite_draw(fbp, raccoon, x_position * COL_WIDTH, y_position * ROW_HEIGHT, 1);
+                                lives--;
+                            }
+                        }
                     }
-				} else {
-					if (cars[i].yup == y_position * ROW_HEIGHT) {
-						if ((x - cars[i].diff + 20) == xt){ 
-                            x_position = COL_MAX / 2 + 1;
-                            y_position = ROW_MAX - 1;
-                            solid_color(fbp, 0x0000);
-                            sprite_draw(fbp, raccoon, x_position * COL_WIDTH, y_position * ROW_HEIGHT, 1);
-                            lives--;
+                    if ((cars[i].xleft + x) < 320) {
+                        if (cars[i].yup == y_position * ROW_HEIGHT) {
+                            if ((cars[i].xleft + x + 40) == xt) {
+                                x_position = COL_MAX / 2 + 1;
+                                y_position = ROW_MAX - 1;
+                                solid_color(fbp, 0x0000);
+                                sprite_draw(fbp, raccoon, x_position * COL_WIDTH, y_position * ROW_HEIGHT, 1);
+                                lives--;
+                            }
+                        }
+                    } else {
+                        if (cars[i].yup == y_position * ROW_HEIGHT) {
+                            if ((x - cars[i].diff + 40) == xt) {
+                                x_position = COL_MAX / 2 + 1;
+                                y_position = ROW_MAX - 1;
+                                solid_color(fbp, 0x0000);
+                                sprite_draw(fbp, raccoon, x_position * COL_WIDTH, y_position * ROW_HEIGHT, 1);
+                                lives--;
+                            }
+                        }
                     }
-					}
-					}
-					if ((cars[i].xleft + x) < 320){
-					if (cars[i].yup == y_position * ROW_HEIGHT) {
-						if ((cars[i].xleft + x + 40) == xt){ 
-                            x_position = COL_MAX / 2 + 1;
-                            y_position = ROW_MAX - 1;
-                            solid_color(fbp, 0x0000);
-                            sprite_draw(fbp, raccoon, x_position * COL_WIDTH, y_position * ROW_HEIGHT, 1);
-                            lives--;
-						}
+                }
+
+                if (cars[i].car_type == 0) {
+                    if ((cars[i].xleft + x) < 320) {
+                        if (cars[i].yup == y_position * ROW_HEIGHT) {
+                            if ((cars[i].xleft + x + 60) == xt) {
+                                x_position = COL_MAX / 2 + 1;
+                                y_position = ROW_MAX - 1;
+                                solid_color(fbp, 0x0000);
+                                sprite_draw(fbp, raccoon, x_position * COL_WIDTH, y_position * ROW_HEIGHT, 1);
+                                lives--;
+                            }
+                        }
+                    } else {
+                        if (cars[i].yup == y_position * ROW_HEIGHT) {
+                            if ((x - cars[i].diff + 60) == xt) {
+                                x_position = COL_MAX / 2 + 1;
+                                y_position = ROW_MAX - 1;
+                                solid_color(fbp, 0x0000);
+                                sprite_draw(fbp, raccoon, x_position * COL_WIDTH, y_position * ROW_HEIGHT, 1);
+                                lives--;
+                            }
+                        }
                     }
-				} else {
-					if (cars[i].yup == y_position * ROW_HEIGHT) {
-						if ((x - cars[i].diff + 40) == xt){ 
-                            x_position = COL_MAX / 2 + 1;
-                            y_position = ROW_MAX - 1;
-                            solid_color(fbp, 0x0000);
-                            sprite_draw(fbp, raccoon, x_position * COL_WIDTH, y_position * ROW_HEIGHT, 1);
-                            lives--;
+                }
+
+                if (cars[i].car_type == 2 || cars[i].car_type == 3 || cars[i].car_type == 4) {
+                    if ((320 - cars[i].xleft + x) < 320) {
+                        if (cars[i].yup == y_position * ROW_HEIGHT) {
+                            if ((cars[i].xleft + x + 20) == xt) {
+                                x_position = COL_MAX / 2 + 1;
+                                y_position = ROW_MAX - 1;
+                                solid_color(fbp, 0x0000);
+                                sprite_draw(fbp, raccoon, x_position * COL_WIDTH, y_position * ROW_HEIGHT, 1);
+                                lives--;
+                            }
+                        }
+                    } else {
+                        if (cars[i].yup == y_position * ROW_HEIGHT) {
+                            if ((x - cars[i].diff + 20) == xt) {
+                                x_position = COL_MAX / 2 + 1;
+                                y_position = ROW_MAX - 1;
+                                solid_color(fbp, 0x0000);
+                                sprite_draw(fbp, raccoon, x_position * COL_WIDTH, y_position * ROW_HEIGHT, 1);
+                                lives--;
+                            }
+                        }
                     }
-					}
-					}
-				}
-				if (cars[i].car_type == 0){
-					if ((cars[i].xleft + x) < 320){
-					if (cars[i].yup == y_position * ROW_HEIGHT) {
-						if ((cars[i].xleft + x + 60) == xt){ 
-                            x_position = COL_MAX / 2 + 1;
-                            y_position = ROW_MAX - 1;
-                            solid_color(fbp, 0x0000);
-                            sprite_draw(fbp, raccoon, x_position * COL_WIDTH, y_position * ROW_HEIGHT, 1);
-                            lives--;
-						}
+                    if ((320 - cars[i].xleft + x) < 320) {
+                        if (cars[i].yup == y_position * ROW_HEIGHT) {
+                            if ((cars[i].xleft + x + 40) == xt) {
+                                x_position = COL_MAX / 2 + 1;
+                                y_position = ROW_MAX - 1;
+                                solid_color(fbp, 0x0000);
+                                sprite_draw(fbp, raccoon, x_position * COL_WIDTH, y_position * ROW_HEIGHT, 1);
+                                lives--;
+                            }
+                        }
+                    } else {
+                        if (cars[i].yup == y_position * ROW_HEIGHT) {
+                            if ((x - cars[i].diff + 40) == xt) {
+                                x_position = COL_MAX / 2 + 1;
+                                y_position = ROW_MAX - 1;
+                                solid_color(fbp, 0x0000);
+                                sprite_draw(fbp, raccoon, x_position * COL_WIDTH, y_position * ROW_HEIGHT, 1);
+                                lives--;
+                            }
+                        }
                     }
-				} else {
-					if (cars[i].yup == y_position * ROW_HEIGHT) {
-						if ((x - cars[i].diff + 60) == xt){ 
-                            x_position = COL_MAX / 2 + 1;
-                            y_position = ROW_MAX - 1;
-                            solid_color(fbp, 0x0000);
-                            sprite_draw(fbp, raccoon, x_position * COL_WIDTH, y_position * ROW_HEIGHT, 1);
-                            lives--;
+                    if ((320 - cars[i].xleft + x) < 320) {
+                        if (cars[i].yup == y_position * ROW_HEIGHT) {
+                            if ((cars[i].xleft + x + 60) == xt) {
+                                x_position = COL_MAX / 2 + 1;
+                                y_position = ROW_MAX - 1;
+                                solid_color(fbp, 0x0000);
+                                sprite_draw(fbp, raccoon, x_position * COL_WIDTH, y_position * ROW_HEIGHT, 1);
+                                lives--;
+                            }
+                        }
+                    } else {
+                        if (cars[i].yup == y_position * ROW_HEIGHT) {
+                            if ((x - cars[i].diff + 60) == xt) {
+                                x_position = COL_MAX / 2 + 1;
+                                y_position = ROW_MAX - 1;
+                                solid_color(fbp, 0x0000);
+                                sprite_draw(fbp, raccoon, x_position * COL_WIDTH, y_position * ROW_HEIGHT, 1);
+                                lives--;
+                            }
+                        }
                     }
-					}
-					}
-				}
-				
-				if (cars[i].car_type == 2 || cars[i].car_type == 3 || cars[i].car_type == 4){
-					if ((320 - cars[i].xleft + x) < 320){
-					if (cars[i].yup == y_position * ROW_HEIGHT) {
-						if ((cars[i].xleft + x + 20) == xt){ 
-                            x_position = COL_MAX / 2 + 1;
-                            y_position = ROW_MAX - 1;
-                            solid_color(fbp, 0x0000);
-                            sprite_draw(fbp, raccoon, x_position * COL_WIDTH, y_position * ROW_HEIGHT, 1);
-                            lives--;
-						}
+                }
+                if (cars[i].car_type == 2 || cars[i].car_type == 3) {
+                    if ((320 - cars[i].xleft + x) < 320) {
+                        if (cars[i].yup == y_position * ROW_HEIGHT) {
+                            if ((cars[i].xleft + x + 80) < xt && xt < (cars[i].xleft + x)) {
+                                x_position = COL_MAX / 2 + 1;
+                                y_position = ROW_MAX - 1;
+                                solid_color(fbp, 0x0000);
+                                sprite_draw(fbp, raccoon, x_position * COL_WIDTH, y_position * ROW_HEIGHT, 1);
+                                lives--;
+                            }
+                        }
+                    } else {
+                        if (cars[i].yup == y_position * ROW_HEIGHT) {
+                            if ((x - cars[i].diff + 80) < xt && xt < (x - cars[i].diff)) {
+                                x_position = COL_MAX / 2 + 1;
+                                y_position = ROW_MAX - 1;
+                                solid_color(fbp, 0x0000);
+                                sprite_draw(fbp, raccoon, x_position * COL_WIDTH, y_position * ROW_HEIGHT, 1);
+                                lives--;
+                            }
+                        }
                     }
-				} else {
-					if (cars[i].yup == y_position * ROW_HEIGHT) {
-						if ((x - cars[i].diff + 20) == xt){ 
-                            x_position = COL_MAX / 2 + 1;
-                            y_position = ROW_MAX - 1;
-                            solid_color(fbp, 0x0000);
-                            sprite_draw(fbp, raccoon, x_position * COL_WIDTH, y_position * ROW_HEIGHT, 1);
-                            lives--;
-                    }
-					}
-					}
-					if ((320 - cars[i].xleft + x) < 320){
-					if (cars[i].yup == y_position * ROW_HEIGHT) {
-						if ((cars[i].xleft + x + 40) == xt){ 
-                            x_position = COL_MAX / 2 + 1;
-                            y_position = ROW_MAX - 1;
-                            solid_color(fbp, 0x0000);
-                            sprite_draw(fbp, raccoon, x_position * COL_WIDTH, y_position * ROW_HEIGHT, 1);
-                            lives--;
-						}
-                    }
-				} else {
-					if (cars[i].yup == y_position * ROW_HEIGHT) {
-						if ((x - cars[i].diff + 40) == xt){ 
-                            x_position = COL_MAX / 2 + 1;
-                            y_position = ROW_MAX - 1;
-                            solid_color(fbp, 0x0000);
-                            sprite_draw(fbp, raccoon, x_position * COL_WIDTH, y_position * ROW_HEIGHT, 1);
-                            lives--;
-                    }
-					}
-					}
-					if ((320 - cars[i].xleft + x) < 320){
-					if (cars[i].yup == y_position * ROW_HEIGHT) {
-						if ((cars[i].xleft + x + 60) == xt){ 
-                            x_position = COL_MAX / 2 + 1;
-                            y_position = ROW_MAX - 1;
-                            solid_color(fbp, 0x0000);
-                            sprite_draw(fbp, raccoon, x_position * COL_WIDTH, y_position * ROW_HEIGHT, 1);
-                            lives--;
-						}
-                    }
-				} else {
-					if (cars[i].yup == y_position * ROW_HEIGHT) {
-						if ((x - cars[i].diff + 60) == xt){ 
-                            x_position = COL_MAX / 2 + 1;
-                            y_position = ROW_MAX - 1;
-                            solid_color(fbp, 0x0000);
-                            sprite_draw(fbp, raccoon, x_position * COL_WIDTH, y_position * ROW_HEIGHT, 1);
-                            lives--;
-                    }
-					}
-					}
-				}
-				if (cars[i].car_type == 2 || cars[i].car_type == 3){
-					if ((320 - cars[i].xleft + x) < 320){
-					if (cars[i].yup == y_position * ROW_HEIGHT) {
-						if ((cars[i].xleft + x + 80) < xt && xt < (cars[i].xleft + x) ){ 
-                            x_position = COL_MAX / 2 + 1;
-                            y_position = ROW_MAX - 1;
-                            solid_color(fbp, 0x0000);
-                            sprite_draw(fbp, raccoon, x_position * COL_WIDTH, y_position * ROW_HEIGHT, 1);
-                            lives--;
-						}
-                    }
-				} else {
-					if (cars[i].yup == y_position * ROW_HEIGHT) {
-						if ((x - cars[i].diff + 80) < xt && xt < (x - cars[i].diff)){ 
-                            x_position = COL_MAX / 2 + 1;
-                            y_position = ROW_MAX - 1;
-                            solid_color(fbp, 0x0000);
-                            sprite_draw(fbp, raccoon, x_position * COL_WIDTH, y_position * ROW_HEIGHT, 1);
-                            lives--;
-                    }
-					}
-					}
-				}
-				
+                }
+
 
                 for (int y = 28; y < 200; y += 15) {
                     sprite_draw(fbp, lanes, 0, y, 4);
@@ -372,42 +377,42 @@ static void GameLoop(void) {
                 for (int y = 29; y < 200; y += 15) {
                     sprite_draw(fbp, lanes, 0, y, 4);
                 }
-				
-				
-				if (cars[i].car_type == 0) {
-                    if ((cars[i].xleft + x) > 320){
-                    	sprite_draw(fbp, ttc, (x - cars[i].diff), cars[i].yup, 3);
-					} else {
-						sprite_draw(fbp, ttc, (cars[i].xleft + x), cars[i].yup, 3);
-					}
+
+
+                if (cars[i].car_type == 0) {
+                    if ((cars[i].xleft + x) > 320) {
+                        sprite_draw(fbp, ttc, (x - cars[i].diff), cars[i].yup, 3);
+                    } else {
+                        sprite_draw(fbp, ttc, (cars[i].xleft + x), cars[i].yup, 3);
+                    }
                 } else if (cars[i].car_type == 1) {
-					if ((cars[i].xleft + x) > 320){
-                    	sprite_draw(fbp, uber, (x - cars[i].diff), cars[i].yup, 2);
-					} else {
-						sprite_draw(fbp, uber, (cars[i].xleft + x), cars[i].yup, 2);
-					}
+                    if ((cars[i].xleft + x) > 320) {
+                        sprite_draw(fbp, uber, (x - cars[i].diff), cars[i].yup, 2);
+                    } else {
+                        sprite_draw(fbp, uber, (cars[i].xleft + x), cars[i].yup, 2);
+                    }
                 } else if (cars[i].car_type == 2) {
-					if ((cars[i].xleft + x) > 320){
-                    	sprite_draw(fbp, go, 260 - (x - cars[i].diff), cars[i].yup, 3);
-					} else {
-						sprite_draw(fbp, go, 260 - (cars[i].xleft + x), cars[i].yup, 3);
-					}
+                    if ((cars[i].xleft + x) > 320) {
+                        sprite_draw(fbp, go, 260 - (x - cars[i].diff), cars[i].yup, 3);
+                    } else {
+                        sprite_draw(fbp, go, 260 - (cars[i].xleft + x), cars[i].yup, 3);
+                    }
                 } else if (cars[i].car_type == 3) {
-					if ((cars[i].xleft + x) > 320){
-                    	sprite_draw(fbp, zum, 260 - (x - cars[i].diff), cars[i].yup, 3);
-					} else {
-						sprite_draw(fbp, zum, 260 - (cars[i].xleft + x), cars[i].yup, 3);
-					}
+                    if ((cars[i].xleft + x) > 320) {
+                        sprite_draw(fbp, zum, 260 - (x - cars[i].diff), cars[i].yup, 3);
+                    } else {
+                        sprite_draw(fbp, zum, 260 - (cars[i].xleft + x), cars[i].yup, 3);
+                    }
                 } else if (cars[i].car_type == 4) {
-					if ((cars[i].xleft + x) > 320){
-                    	sprite_draw(fbp, car, 260 - (x - cars[i].diff), cars[i].yup, 2);
-					} else {
-						sprite_draw(fbp, car, 260 - (cars[i].xleft + x), cars[i].yup, 2);
-					}
+                    if ((cars[i].xleft + x) > 320) {
+                        sprite_draw(fbp, car, 260 - (x - cars[i].diff), cars[i].yup, 2);
+                    } else {
+                        sprite_draw(fbp, car, 260 - (cars[i].xleft + x), cars[i].yup, 2);
+                    }
                 }
-				
+
             }
-			if (lives == 0) { // ends game when no lives left
+            if (lives == 0) { // ends game when no lives left
                 game_over = 1;
                 goto end;
             }
@@ -449,13 +454,11 @@ static void GameLoop(void) {
             }
             WriteHexDisplayFull(score);
             WriteLEDFull(lives);
-		}
-
-            
-        
+        }
         // if raccoon has reached the top
     }
-    end: return;
+    end:
+    return;
 }
 
 static void StartScreen(void) {
@@ -490,7 +493,7 @@ int main() {
     solid_color(fbp, 0xFFFF); // make all pixels white
     instantiate_cars();
 
-	while (1) { // primary game loop
+    while (1) { // primary game loop
         StartScreen();
         GameLoop();
         EndScreen();
